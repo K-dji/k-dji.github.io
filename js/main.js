@@ -254,6 +254,7 @@ function enterLobby(){
 }
 function renderLobbyUser(){
   const hero=state.user?.skin==='hero';
+  $('btn-admin').style.display = state.user?.admin===1 ? 'block' : 'none';
   $('lobby-avatar').textContent=hero?'我':(state.user?.username?.[0]||'兵').toUpperCase();
   $('lobby-avatar').classList.toggle('hero',hero);
   const lv=passLevel();
@@ -332,7 +333,84 @@ function initSettings(){
     modal('settings-modal',false);
   };
 }
-function openSettings(){ initSettings(); modal('settings-modal',true); }
+// ---------- 开挂面板（kaobei / 被授权玩家） ----------
+function canCheat(){ return !!(state.user && (state.user.admin===1 || state.user.cheats===1)); }
+function loadCheats(){ try{ return JSON.parse(localStorage.getItem('pe3d_cheats')||'{}'); }catch(e){ return {}; } }
+function saveCheats(c){ localStorage.setItem('pe3d_cheats', JSON.stringify(c)); }
+function initCheatPanel(){
+  const p=$('cheat-panel');
+  if(!canCheat()){ p.style.display='none'; return; }
+  p.style.display='block';
+  const c=loadCheats();
+  $('ch-aimbot').checked=!!c.aimbot; $('ch-god').checked=!!c.god;
+  $('ch-inf').checked=!!c.infAmmo; $('ch-norecoil').checked=!!c.noRecoil;
+  $('ch-esp').checked=!!c.esp;
+  $('ch-maxhp').value=c.maxHp&&c.maxHp>100? c.maxHp : 100;
+  $('ch-speed').value=c.speedMul&&c.speedMul>1? c.speedMul : 1;
+  $('out-chspeed').textContent=(+$('ch-speed').value).toFixed(1)+'x';
+  $('ch-speed').oninput=e=>{ $('out-chspeed').textContent=(+e.target.value).toFixed(1)+'x'; };
+  $('btn-cheat-save').onclick=()=>{
+    const cfg={ aimbot:$('ch-aimbot').checked, god:$('ch-god').checked,
+      infAmmo:$('ch-inf').checked, noRecoil:$('ch-norecoil').checked, esp:$('ch-esp').checked,
+      maxHp:parseInt($('ch-maxhp').value)||100, speedMul:parseFloat($('ch-speed').value)||1 };
+    saveCheats(cfg);
+    if(state.game) state.game.cheats=cfg;    // 立即生效
+    if(state.game) state.game.spawnPlayer?.(); // 重生以应用血量上限
+  };
+  $('btn-cheat-reset').onclick=()=>{
+    saveCheats({});
+    initCheatPanel();
+    if(state.game){ state.game.cheats={}; state.game.spawnPlayer?.(); }
+  };
+}
+function openSettings(){ initSettings(); initCheatPanel(); modal('settings-modal',true); }
+
+// ---------- 管理面板（kaobei） ----------
+function openAdmin(){
+  modal('admin-modal',true);
+  renderAdmin();
+}
+async function renderAdmin(){
+  const box=$('admin-list');
+  try{
+    const data=await api('/admin/users');
+    box.innerHTML='';
+    for(const u of data.list||[]){
+      const el=document.createElement('div'); el.id='admin-row';
+      el.innerHTML=`<span class="un" style="${u.username==='kaobei'?'color:var(--gold)':''}">${u.username}</span>
+        <span class="badge ${u.admin?'on':'off'}">${u.admin?'管理员':'玩家'}</span>
+        <span class="badge ${u.cheats?'on':'off'}">${u.cheats?'挂权✓':'挂权✗'}</span>
+        <span class="badge ${u.banned?'on':'off'}" style="${u.banned?'background:var(--danger);color:#fff':''}">${u.banned?'已封禁':'正常'}</span>
+        <span style="color:var(--gold2)">◈${u.coins}</span>`;
+      if(u.username!=='kaobei'){
+        const mk=(label, field, val)=>{
+          const b=document.createElement('button'); b.className='btn small '+(val?'danger':'ok'); b.textContent=label;
+          b.onclick=async()=>{ await api('/admin/set',{username:u.username,[field]:val}); renderAdmin(); };
+          return b;
+        };
+        el.append(
+          mk(u.cheats?'收挂权':'给挂权','cheats',!u.cheats),
+          mk(u.admin?'撤管理':'设管理','admin',!u.admin),
+          mk(u.banned?'解封':'封禁','banned',!u.banned),
+        );
+        const coinWrap=document.createElement('span');
+        const coinInput=document.createElement('input'); coinInput.type='number'; coinInput.placeholder='金币';
+        coinInput.style.cssText='width:76px;padding:4px 6px;font-size:12px';
+        const coinBtn=document.createElement('button'); coinBtn.className='btn small'; coinBtn.textContent='加金币';
+        coinBtn.onclick=async()=>{
+          const v=parseInt(coinInput.value)||0;
+          if(v!==0){ await api('/admin/set',{username:u.username,coins:Math.max(0,u.coins+v)}); renderAdmin(); }
+        };
+        coinWrap.append(coinInput,coinBtn);
+        el.appendChild(coinWrap);
+      }
+      box.appendChild(el);
+    }
+  }catch(e){ box.innerHTML=`<div style="color:var(--sub)">${e.message}</div>`; }
+}
+$('btn-admin-close').onclick=()=>modal('admin-modal',false);
+$('btn-admin').onclick=()=>openAdmin();
+
 $('btn-settings').onclick=openSettings;
 $('btn-pause-settings').onclick=openSettings;
 $('btn-keymap').onclick=openKeymap;
@@ -539,6 +617,7 @@ function startGame(opts){
     settings:state.settings,
     skin:state.user?.skin,
     prefs:state.prefs,
+    cheats: canCheat()? loadCheats() : {},
     aiEnabled: opts.mode!=='multi',
     timeLimit: opts.timeLimit||0,
     onPause:()=>modalPause(true),

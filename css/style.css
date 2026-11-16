@@ -355,3 +355,12 @@ body.touch #hud-tip { bottom:64px; max-width:70vw; }
 .friend-row .dot.on { background:var(--ok); box-shadow:0 0 6px var(--ok); }
 .friend-row .nm { flex:1; }
 .friend-row .st { font-size:11px; color:var(--sub); }
+
+/* ---------- 开挂 / 管理面板 ---------- */
+#cheat-panel .set-row label { color:var(--danger); }
+#admin-row { display:flex; align-items:center; gap:6px; padding:9px 10px; margin-bottom:6px;
+  background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.1); font-size:13px; flex-wrap:wrap; }
+#admin-row .un { font-weight:700; width:90px; }
+#admin-row .badge { font-size:10px; padding:2px 6px; border-radius:2px; font-weight:700; }
+#admin-row .badge.on { background:var(--ok); color:#08210f; }
+#admin-row .badge.off { background:rgba(255,255,255,.15); color:var(--sub); }

@@ -129,6 +129,7 @@
         <button class="btn ghost" id="btn-pass" data-i18n="btn_pass">通行证</button>
         <button class="btn ghost" id="btn-rank" data-i18n="btn_rank">排行榜</button>
         <button class="btn ghost" id="btn-friends" data-i18n="btn_friends">好 友</button>
+        <button class="btn danger" id="btn-admin" style="display:none">管 理</button>
         <div class="panel" style="flex:1;font-size:13px;color:var(--sub)">
           <div style="color:var(--gold);font-weight:700;margin-bottom:8px" data-i18n="lobby_info">作战情报</div>
           <div id="lobby-stats">关卡进度 0/10<br>无尽最佳 0 波</div>
@@ -296,6 +297,23 @@
       <div class="set-row"><label>音量</label><input type="range" id="set-vol" min="0" max="1" step="0.05"><output id="out-vol"></output></div>
       <div class="set-row"><label>画质</label><select id="set-quality" style="width:130px">
         <option value="low">流畅</option><option value="mid">均衡</option><option value="high">高清</option></select></div>
+
+      <!-- 开挂面板（仅 kaobei / 被授权玩家显示） -->
+      <div id="cheat-panel" style="display:none;margin-top:12px;border-top:1px solid rgba(240,165,58,.4);padding-top:10px">
+        <div style="color:var(--danger);font-weight:900;letter-spacing:2px;margin-bottom:8px">⚔ 开挂面板（仅授权账号可见）</div>
+        <div class="set-row"><label>自瞄</label><input type="checkbox" id="ch-aimbot" style="width:auto;transform:scale(1.4)"></div>
+        <div class="set-row"><label>无敌</label><input type="checkbox" id="ch-god" style="width:auto;transform:scale(1.4)"></div>
+        <div class="set-row"><label>无限子弹</label><input type="checkbox" id="ch-inf" style="width:auto;transform:scale(1.4)"></div>
+        <div class="set-row"><label>无后座</label><input type="checkbox" id="ch-norecoil" style="width:auto;transform:scale(1.4)"></div>
+        <div class="set-row"><label>透视（敌人标记）</label><input type="checkbox" id="ch-esp" style="width:auto;transform:scale(1.4)"></div>
+        <div class="set-row"><label>血量上限</label><input type="number" id="ch-maxhp" min="100" max="9999" step="50" style="width:120px"><span style="font-size:12px;color:var(--sub)">100=正常</span></div>
+        <div class="set-row"><label>移速倍率</label><input type="range" id="ch-speed" min="1" max="3" step="0.1"><output id="out-chspeed"></output></div>
+        <div class="row" style="gap:8px">
+          <button class="btn danger small" id="btn-cheat-save">应用作弊配置</button>
+          <button class="btn ghost small" id="btn-cheat-reset">恢复正常</button>
+        </div>
+      </div>
+
       <div class="row" style="justify-content:flex-end"><button class="btn" id="btn-set-done">保存并关闭</button></div>
     </div>
   </div>
@@ -357,6 +375,18 @@
       <div class="row" style="margin-top:14px;justify-content:flex-end">
         <button class="btn ghost" id="btn-invite-no">不同意</button>
         <button class="btn ok" id="btn-invite-yes">同 意</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 管理面板（kaobei） ================= -->
+  <div class="modal" id="admin-modal">
+    <div class="box panel">
+      <h2>账号管理</h2>
+      <div style="font-size:12px;color:var(--sub);margin-bottom:8px">可授予玩家「开挂权限」、设管理员、封禁、调整金币</div>
+      <div id="admin-list" style="max-height:52vh;overflow-y:auto"></div>
+      <div class="row" style="justify-content:flex-end;margin-top:10px">
+        <button class="btn ghost" id="btn-admin-close">关闭</button>
       </div>
     </div>
   </div>

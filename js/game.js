@@ -126,6 +126,7 @@ export class Game {
       flash:THROWABLES.flash.count, molotov:THROWABLES.molotov.count}};
     this.projectiles=[]; this.fires=[]; this.smokes=[]; this.blindT=0;
     this.swingT=0;
+    this.cheats=opts.cheats||{};   // 管理员/被授权玩家的作弊配置
     this.ammo={}; // {wkey: mag 内}
     this.reserve={'5.56':210,'7.62':150,'.45':90,'12号':24,'.300':18,'9mm':80};
     for(const k of this.slots) if(WEAPONS[k]) this.ammo[k]=WEAPONS[k].mag;
@@ -254,10 +255,11 @@ export class Game {
   }
 
   // ---------------- 玩家 ----------------
+  get maxHp(){ const m=Number(this.cheats&&this.cheats.maxHp); return m>0? m : 100; }
   spawnPlayer(){
     this.pos.set(rand(-8,8),0,rand(-8,8));
     this.pos.y=0; this.vel.y=0; this.vel.x=0; this.vel.z=0; this.peakY=0;
-    this.hp=100; this.boost=0; this.alive=true; this.stance='stand';
+    this.hp=this.maxHp; this.boost=0; this.alive=true; this.stance='stand';
     this.buildViewModel();
   }
   buildViewModel(){
@@ -432,7 +434,8 @@ export class Game {
 
   damagePlayer(dmg, fromDir){
     if(!this.alive) return;
-    this.hp-=dmg;
+    if(this.cheats&&this.cheats.god) return;   // 无敌
+    this.hp=Math.min(this.hp, this.maxHp)-dmg;
     if(this.hp<=0){
       this.hp=0; this.alive=false; this.deaths++;
       this.respawnT = this.mode==='free'||this.mode==='multi' ? 3 : -1;
@@ -446,16 +449,17 @@ export class Game {
     const w=this.weapon;
     if(this.reloading>0||this.fireCd>0||this.boltCd>0) return;
     if(this.isMelee){ this.meleeAttack(); return; }
-    if(this.ammo[this.wkey]<=0){ this.sfx.beep(220,0.06,0.2); this.startReload(); return; }
-    this.ammo[this.wkey]--;
+    if(this.cheats&&this.cheats.aimbot) this.aimbotAim();          // 自瞄吸附
+    if(!(this.cheats&&this.cheats.infAmmo) && this.ammo[this.wkey]<=0){ this.sfx.beep(220,0.06,0.2); this.startReload(); return; }
+    if(!(this.cheats&&this.cheats.infAmmo)) this.ammo[this.wkey]--;
     this.fireCd=60/w.rpm;
     if(w.bolt) this.boltCd=1.1;
     this.sfx.shot(w.cls==='狙击枪'?'sniper':w.cls==='霰弹枪'?'shotgun':w.cls==='手枪'?'pistol':'ar');
-    this.recoil=Math.min(this.recoil+0.028*w.recoil,0.14);
+    if(!(this.cheats&&this.cheats.noRecoil)) this.recoil=Math.min(this.recoil+0.028*w.recoil,0.14);
     this.muzzleFlash.material.opacity=1;
     const pellets=w.pellets||1;
     const moving=Math.hypot(this.vel.x,this.vel.z)>1.2;
-    const baseSpread=(this.adsK>0.5? w.adsSpread : w.spread)*(moving?1.7:1)*(this.stance==='prone'?0.6:1);
+    const baseSpread=(this.adsK>0.5? w.adsSpread : w.spread)*(moving?1.7:1)*(this.stance==='prone'?0.6:1)*(this.cheats&&this.cheats.noRecoil?0.15:1);
     for(let p=0;p<pellets;p++){
       const dir=new THREE.Vector3(0,0,-1).applyEuler(this.camera.rotation);
       dir.x+= (Math.random()-0.5)*baseSpread*2; dir.y+=(Math.random()-0.5)*baseSpread*2; dir.normalize();
@@ -463,6 +467,23 @@ export class Game {
     }
     this.onHud({event:'shot'});
     this.opts.onShoot?.();
+  }
+  // 自瞄：转向最近可视敌人头部
+  aimbotAim(){
+    let best=null, bd=1e9;
+    const eye=this.camera.getWorldPosition(V3());
+    for(const b of this.bots){
+      if(b.hp<=0) continue;
+      const d=b.mesh.position.distanceTo(this.pos);
+      if(d<90&&d<bd){ best=b; bd=d; }
+    }
+    if(!best) return;
+    const head=best.mesh.position.clone(); head.y=1.72;
+    const v=head.sub(eye);
+    const horiz=Math.sqrt(v.x*v.x+v.z*v.z);
+    if(horiz<0.01) return;
+    this.pitch=clamp(Math.atan2(v.y,horiz),-1.45,1.45);
+    this.yaw=Math.atan2(-v.x,-v.z);
   }
   castBullet(dir,w){
     const origin=this.camera.getWorldPosition(V3());
@@ -632,6 +653,11 @@ export class Game {
       mesh, head, body, hp:100*Math.min(strength,1.6), maxHp:100*Math.min(strength,1.6),
       strength, yaw:0, state:'patrol', wp:V3(x,0,z), shootCd:rand(0.5,2), burst:0,
       cmd:{move:[0,0],shoot:false,until:0}, losCache:0, los:false };
+    // 透视标记（作弊：头顶红色标记，默认隐藏）
+    const esp=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),
+      new THREE.MeshBasicMaterial({color:0xff2020, transparent:true, opacity:0.85, depthTest:false}));
+    esp.position.y=2.25; esp.visible=false; mesh.add(esp);
+    bot.esp=esp;
     body.userData.bot=bot; head.userData.bot=bot;
     this.bots.push(bot);
     return bot;
@@ -655,7 +681,7 @@ export class Game {
     this.wave++;
     const n=Math.min(3+this.wave,14), s=0.6+this.wave*0.12;
     for(let i=0;i<n;i++) this.spawnBot(rand(-this.mapBounds*0.7,this.mapBounds*0.7),rand(-this.mapBounds*0.7,this.mapBounds*0.7),s,i);
-    this.hp=Math.min(100,this.hp+30); this.medkits=Math.min(3,this.medkits+1); this.drinks=Math.min(4,this.drinks+1);
+    this.hp=Math.min(this.maxHp,this.hp+30); this.medkits=Math.min(3,this.medkits+1); this.drinks=Math.min(4,this.drinks+1);
     this.onTip(`第 ${this.wave} 波来袭！（共 ${n} 名）`);
     this.sfx.beep(980,0.2,0.4);
   }
@@ -736,7 +762,7 @@ export class Game {
     const targetEye={stand:1.6,crouch:1.05,prone:0.45}[this.stance];
     this.eyeY+=(targetEye-this.eyeY)*Math.min(1,dt*8);
     // 移动
-    const speed={stand:(this.keys['ShiftLeft']?3.2:6.2),crouch:2.4,prone:1.0}[this.stance]*(this.adsK>0.5?0.55:1);
+    const speed={stand:(this.keys["ShiftLeft"]?3.2:6.2),crouch:2.4,prone:1.0}[this.stance]*(this.adsK>0.5?0.55:1)*((this.cheats&&this.cheats.speedMul>1)?this.cheats.speedMul:1);
     const len=Math.hypot(f,r)||1;
     const mx=(Math.sin(this.yaw)*-f + Math.cos(this.yaw)*r)/len*speed;
     const mz=(Math.cos(this.yaw)*-f - Math.sin(this.yaw)*r)/len*speed;
@@ -794,12 +820,12 @@ export class Game {
       this.useT+=dt;
       if(this.useItemMesh) this.useItemMesh.rotation.y+=dt*3;
       if(this.useT>=3.5){
-        if(this.useAction==='heal') this.hp=Math.min(100,this.hp+75);
+        if(this.useAction==='heal') this.hp=Math.min(this.maxHp,this.hp+75);
         else this.boost=Math.min(100,this.boost+40);
         this.useAction=null; this.removeUseItem(); this.onTip('使用完成');
       }
     }
-    if(this.boost>0){ this.boost=Math.max(0,this.boost-dt*2.2); this.hp=Math.min(100,this.hp+dt*3.2); }
+    if(this.boost>0){ this.boost=Math.max(0,this.boost-dt*2.2); this.hp=Math.min(this.maxHp,this.hp+dt*3.2); }
     // 输入开关槽位
     if(this.input.switchSlot!==null){ this.switchTo(this.input.switchSlot); this.input.switchSlot=null; }
     // 相机
@@ -813,8 +839,10 @@ export class Game {
 
   updateBots(dt){
     if(this.mode==='multi') return;
+    const espOn=!!(this.cheats&&this.cheats.esp);
     const pp=this.pos;
     for(const bot of this.bots){
+      if(bot.esp) bot.esp.visible=espOn&&bot.hp>0;
       if(bot.hp<=0) continue;
       // 视线检测（每 0.4s）
       bot.losCache-=dt;
