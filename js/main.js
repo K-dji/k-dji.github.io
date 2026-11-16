@@ -2,9 +2,9 @@
 // peace-strike-3d · 主流程（登录 → 创建角色 → 大厅 → 战斗 / 联机）
 // ============================================================
 import {
-  MODES, MAPS, MAP_BY_ID, LEVELS, WEAPONS, DEFAULT_SETTINGS,
+  MODES, MAPS, MAP_BY_ID, LEVELS, WEAPONS, MELEE, DEFAULT_SETTINGS,
   UNLOCK_COST, CHAR_SKINS, SKIN_TONES, WEAPON_SKINS, MED_SKINS, DRINK_SKINS,
-  THROWABLE_SKINS, THROWABLES, CRATE_POOL, PASS_XP_PER_LEVEL, PASS_REWARD, REWARDS,
+  THROWABLE_SKINS, THROWABLES, MELEE_SKINS, CRATE_POOL, PASS_XP_PER_LEVEL, PASS_REWARD, REWARDS,
 } from './config.js';
 import { Game } from './game.js';
 import { AIManager } from './ai.js';
@@ -355,11 +355,12 @@ $('btn-km-reset').onclick=()=>{ state.touch?.resetLayout(); state.touch.openEdit
 let storeTab='charSkin';
 const STORE_TABS=[
   ['charSkin','角色皮肤'],['weapon','武器解锁'],['weaponSkin','武器皮肤'],
-  ['medSkin','药物皮肤'],['drinkSkin','饮料皮肤'],['throwableSkin','投掷物皮肤'],
+  ['panSkin','平底锅'],['medSkin','药物皮肤'],['drinkSkin','饮料皮肤'],['throwableSkin','投掷物皮肤'],
 ];
 function storeItems(){
   if(storeTab==='charSkin') return Object.entries(CHAR_SKINS).filter(([k,c])=>!c.hero).map(([k,c])=>({kind:'charSkin',id:k,name:c.name,price:c.price,sw:'#'+c.body.toString(16).padStart(6,'0')}));
   if(storeTab==='weapon') return Object.entries(UNLOCK_COST).filter(([k,c])=>c>0).map(([k,c])=>({kind:'weapon',id:k,name:WEAPONS[k].name,price:c,sub:WEAPONS[k].cls+' · '+WEAPONS[k].dmg+'伤害',sw:'#6a7484'}));
+  if(storeTab==='panSkin') return Object.entries(MELEE_SKINS).map(([k,c])=>({kind:'panSkin',id:k,name:c.name,price:c.price,sw:'#'+c.color.toString(16).padStart(6,'0')}));
   if(storeTab==='weaponSkin') return Object.entries(WEAPON_SKINS).map(([k,c])=>({kind:'weaponSkin',id:k,name:c.name,price:c.price,sw:'#'+c.color.toString(16).padStart(6,'0')}));
   if(storeTab==='medSkin') return Object.entries(MED_SKINS).map(([k,c])=>({kind:'medSkin',id:k,name:c.name,price:c.price,sw:'#'+c.color.toString(16).padStart(6,'0')}));
   if(storeTab==='drinkSkin') return Object.entries(DRINK_SKINS).map(([k,c])=>({kind:'drinkSkin',id:k,name:c.name,price:c.price,sw:'#'+c.color.toString(16).padStart(6,'0')}));
@@ -413,8 +414,8 @@ $('btn-crate-open').onclick=async()=>{
     const r=await api('/store/crate',{});
     state.user.coins=r.coins;
     if(!state.owned.some(o=>o.kind===r.reward.kind&&o.id===r.reward.itemId)) state.owned.push(r.reward);
-    const names={charSkin:'角色皮肤',weaponSkin:'武器皮肤',medSkin:'药物皮肤',drinkSkin:'饮料皮肤',throwableSkin:'投掷物皮肤'};
-    const look={charSkin:CHAR_SKINS,weaponSkin:WEAPON_SKINS,medSkin:MED_SKINS,drinkSkin:DRINK_SKINS,throwableSkin:THROWABLE_SKINS}[r.reward.kind];
+    const names={charSkin:'角色皮肤',weaponSkin:'武器皮肤',panSkin:'平底锅皮肤',medSkin:'药物皮肤',drinkSkin:'饮料皮肤',throwableSkin:'投掷物皮肤'};
+    const look={charSkin:CHAR_SKINS,weaponSkin:WEAPON_SKINS,panSkin:MELEE_SKINS,medSkin:MED_SKINS,drinkSkin:DRINK_SKINS,throwableSkin:THROWABLE_SKINS}[r.reward.kind];
     $('crate-result').textContent=`🎉 获得 ${names[r.reward.kind]}「${look[r.reward.itemId].name}」`;
     renderLobbyUser();
   }catch(e){ $('crate-result').textContent=e.message; }
@@ -441,14 +442,15 @@ function renderWarehouse(){
   // 皮肤选择
   const fillSkins=(sel, skinsKey, current)=>{
     sel.innerHTML='';
-    const ownS=ownedIds(skinsKey); ownS.add(skinsKey==='weaponSkin'?'none':'classic');
-    const table={weaponSkin:WEAPON_SKINS,medSkin:MED_SKINS,drinkSkin:DRINK_SKINS,throwableSkin:THROWABLE_SKINS}[skinsKey];
+    const ownS=ownedIds(skinsKey); ownS.add((skinsKey==='weaponSkin'||skinsKey==='panSkin')?'none':'classic');
+    const table={weaponSkin:WEAPON_SKINS,panSkin:MELEE_SKINS,medSkin:MED_SKINS,drinkSkin:DRINK_SKINS,throwableSkin:THROWABLE_SKINS}[skinsKey];
     for(const k of ownS){
       const o=document.createElement('option'); o.value=k; o.textContent=table[k]?.name||k; sel.appendChild(o);
     }
     sel.value=ownS.has(current)?current:ownS.values().next().value;
   };
   fillSkins($('sk-weapon'),'weaponSkin', state.prefs.weaponSkins?.[lo[0]]||'none');
+  fillSkins($('sk-pan'),'panSkin', state.prefs.panSkin||'none');
   fillSkins($('sk-med'),'medSkin', state.prefs.medSkin||'classic');
   fillSkins($('sk-drink'),'drinkSkin', state.prefs.drinkSkin||'classic');
   fillSkins($('sk-throw'),'throwableSkin', state.prefs.throwableSkin||'classic');
@@ -457,6 +459,7 @@ function renderWarehouse(){
 $('btn-wh-save').onclick=async()=>{
   state.prefs.loadout=[$('lo-primary').value,$('lo-secondary').value,$('lo-pistol').value];
   state.prefs.weaponSkins={...state.prefs.weaponSkins, [state.prefs.loadout[0]]:$('sk-weapon').value};
+  state.prefs.panSkin=$('sk-pan').value;
   state.prefs.medSkin=$('sk-med').value;
   state.prefs.drinkSkin=$('sk-drink').value;
   state.prefs.throwableSkin=$('sk-throw').value;
@@ -596,13 +599,13 @@ function handleHud(u){
     $('bar-boost').style.transform=`scaleX(${g.boost/100})`;
     $('num-boost').textContent=Math.ceil(g.boost);
     const w=g.weapon;
-    $('ammo-big').innerHTML=`${g.reloading>0?'--':g.ammo[g.wkey]} <small>/ ${g.reserve[w.ammo]}</small>`;
+    if(g.isMelee){ $('ammo-big').innerHTML='∞'; } else { $('ammo-big').innerHTML=`${g.reloading>0?'--':g.ammo[g.wkey]} <small>/ ${g.reserve[w.ammo]}</small>`; }
     $('weapon-name').textContent=w.name+(g.reloading>0?'（换弹中）':'');
     const slots=$('weapon-slots');
     if(slots.childElementCount!==g.slots.length){
       slots.innerHTML='';
       g.slots.forEach((k,i)=>{ const el=document.createElement('div'); el.className='wslot'; el.dataset.i=i;
-        el.textContent=WEAPONS[k].name; el.onclick=()=>g.switchTo(i); slots.appendChild(el); });
+        el.textContent=(WEAPONS[k]||MELEE).name; el.onclick=()=>g.switchTo(i); slots.appendChild(el); });
     }
     [...slots.children].forEach((el,i)=>el.classList.toggle('on',i===g.slot));
     $('hud-timer').textContent = g.timeLeft>0? fmtTime(g.timeLeft): (g.mode==='endless'?`第 ${g.wave} 波`:'∞');

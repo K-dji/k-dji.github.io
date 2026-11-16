@@ -2,7 +2,7 @@
 // peace-strike-3d · 游戏核心引擎（Three.js 第一人称射击）
 // ============================================================
 import * as THREE from '../vendor/three.module.min.js';
-import { WEAPONS, MAP_BY_ID, LEVELS, THROWABLES, WEAPON_SKINS, MED_SKINS, DRINK_SKINS, THROWABLE_SKINS, SKIN_TONES } from './config.js';
+import { WEAPONS, MAP_BY_ID, LEVELS, THROWABLES, WEAPON_SKINS, MED_SKINS, DRINK_SKINS, THROWABLE_SKINS, SKIN_TONES, MELEE, MELEE_SKINS } from './config.js';
 
 const V3 = (x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -118,16 +118,17 @@ export class Game {
 
     // 武器：配装槽位（从仓库选择；未配置用默认）
     const lo=opts.prefs?.loadout;
-    this.slots=(Array.isArray(lo)&&lo.length>=2)? lo.slice(0,3) : ['m416','ump45','p1911'];
+    this.slots=((Array.isArray(lo)&&lo.length>=2)? lo.slice(0,3) : ['m416','ump45','p1911']).concat(['pan']);
     this.slot=0;
     this.prefs=opts.prefs||{};
     this.gender=this.prefs.gender||'male';
     this.throwable={type:'frag', counts:{frag:THROWABLES.frag.count, smoke:THROWABLES.smoke.count,
       flash:THROWABLES.flash.count, molotov:THROWABLES.molotov.count}};
     this.projectiles=[]; this.fires=[]; this.smokes=[]; this.blindT=0;
+    this.swingT=0;
     this.ammo={}; // {wkey: mag 内}
     this.reserve={'5.56':210,'7.62':150,'.45':90,'12号':24,'.300':18,'9mm':80};
-    for(const k of this.slots) this.ammo[k]=WEAPONS[k].mag;
+    for(const k of this.slots) if(WEAPONS[k]) this.ammo[k]=WEAPONS[k].mag;
     this.fireCd=0; this.reloading=0; this.recoil=0; this.adsK=0; this.boltCd=0;
 
     this.bots=[]; this.bullets=[]; this.effects=[];
@@ -218,6 +219,7 @@ export class Game {
       if(e.code==='Digit1')this.input.switchSlot=0;
       if(e.code==='Digit2')this.input.switchSlot=1;
       if(e.code==='Digit3')this.input.switchSlot=2;
+      if(e.code==='Digit4')this.input.switchSlot=3;
       if(e.code==='KeyR')this.input.reloadHeld=true;
       if(e.code==='KeyG')this.cycleThrowable();
       if(e.code==='KeyF')this.throwCurrent();
@@ -268,14 +270,29 @@ export class Game {
     const armMat=new THREE.MeshLambertMaterial({color:skinColor, emissive:hero?0x664400:0x000000});
     const arm1=new THREE.Mesh(new THREE.BoxGeometry(armW,armW,0.5),armMat); arm1.position.set(-0.22,-0.18,-0.45);
     const arm2=arm1.clone(); arm2.position.set(0.24,-0.2,-0.35);
-    const ws=WEAPON_SKINS[this.prefs.weaponSkins?.[this.wkey]||'none']||WEAPON_SKINS.none;
-    const gunMat=new THREE.MeshLambertMaterial({color:ws.color, emissive:ws.emissive});
-    const gun=new THREE.Mesh(new THREE.BoxGeometry(0.09,0.13,0.85),gunMat); gun.position.set(0.12,-0.14,-0.7);
-    const barrel=new THREE.Mesh(new THREE.BoxGeometry(0.045,0.045,0.3),gunMat); barrel.position.set(0.12,-0.12,-1.1);
-    this.muzzleFlash=new THREE.Mesh(new THREE.SphereGeometry(0.09,6,6),
-      new THREE.MeshBasicMaterial({color:0xffd97a,transparent:true,opacity:0}));
-    this.muzzleFlash.position.set(0.12,-0.12,-1.3);
-    vm.add(arm1,arm2,gun,barrel,this.muzzleFlash);
+    vm.add(arm1,arm2);
+    if(this.isMelee){
+      // 平底锅（皮肤色，默认黑色）
+      const s=MELEE_SKINS[this.prefs.panSkin||'none']||MELEE_SKINS.none;
+      const mat=new THREE.MeshLambertMaterial({color:s.color, emissive:s.emissive||0x000000});
+      const panG=new THREE.Group();
+      const pan=new THREE.Mesh(new THREE.CylinderGeometry(0.17,0.19,0.035,16),mat); pan.position.z=-0.62;
+      const rim=new THREE.Mesh(new THREE.TorusGeometry(0.18,0.02,6,16),mat); rim.position.set(0,0.01,-0.62); rim.rotation.x=Math.PI/2;
+      const handle=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.05,0.3),mat); handle.position.z=-0.4;
+      panG.add(pan,rim,handle);
+      panG.position.set(0.12,-0.16,0);
+      vm.add(panG);
+      this.panGroup=panG; this.muzzleFlash=null;
+    } else {
+      const ws=WEAPON_SKINS[this.prefs.weaponSkins?.[this.wkey]||'none']||WEAPON_SKINS.none;
+      const gunMat=new THREE.MeshLambertMaterial({color:ws.color, emissive:ws.emissive});
+      const gun=new THREE.Mesh(new THREE.BoxGeometry(0.09,0.13,0.85),gunMat); gun.position.set(0.12,-0.14,-0.7);
+      const barrel=new THREE.Mesh(new THREE.BoxGeometry(0.045,0.045,0.3),gunMat); barrel.position.set(0.12,-0.12,-1.1);
+      this.muzzleFlash=new THREE.Mesh(new THREE.SphereGeometry(0.09,6,6),
+        new THREE.MeshBasicMaterial({color:0xffd97a,transparent:true,opacity:0}));
+      this.muzzleFlash.position.set(0.12,-0.12,-1.3);
+      vm.add(gun,barrel,this.muzzleFlash);
+    }
     vm.position.set(0,0,0);
     this.viewmodel=vm; this.camera.add(vm);
     if(!this.scene.children.includes(this.camera)) this.scene.add(this.camera);
@@ -409,8 +426,9 @@ export class Game {
     if(fl){ fl.style.opacity=Math.min(1,this.blindT/0.8); }
     this.blindT=Math.max(0,this.blindT-dt);
   }
-  get weapon(){ return WEAPONS[this.slots[this.slot]]; }
   get wkey(){ return this.slots[this.slot]; }
+  get weapon(){ return WEAPONS[this.wkey] || MELEE; }
+  get isMelee(){ return this.wkey==='pan'; }
 
   damagePlayer(dmg, fromDir){
     if(!this.alive) return;
@@ -427,6 +445,7 @@ export class Game {
   shoot(){
     const w=this.weapon;
     if(this.reloading>0||this.fireCd>0||this.boltCd>0) return;
+    if(this.isMelee){ this.meleeAttack(); return; }
     if(this.ammo[this.wkey]<=0){ this.sfx.beep(220,0.06,0.2); this.startReload(); return; }
     this.ammo[this.wkey]--;
     this.fireCd=60/w.rpm;
@@ -506,6 +525,36 @@ export class Game {
     if(el){ el.style.opacity=1; el.style.background=head?'#ff9a5a':'#ffdf9a';
       clearTimeout(this._hmT); this._hmT=setTimeout(()=>el.style.opacity=0,120); }
   }
+  // 平底锅近战挥击（扇形判定，可击中 AI 敌人 / 联机玩家）
+  meleeAttack(){
+    this.fireCd=MELEE.cd;
+    this.swingT=0.3;                       // 挥击动画
+    this.sfx.beep(180,0.05,0.2);
+    const dir=new THREE.Vector3(0,0,-1).applyEuler(this.camera.rotation);
+    const fwd=new THREE.Vector3(dir.x,0,dir.z).normalize();
+    let hitAny=false;
+    for(const b of this.bots){
+      if(b.hp<=0) continue;
+      const to=b.mesh.position.clone().sub(this.pos); to.y=0;
+      const d=to.length();
+      if(d<MELEE.range && to.normalize().dot(fwd)>0.35){
+        this.hitBot(b, MELEE.dmg*(0.85+Math.random()*0.3), false);
+        this.addSpark(b.mesh.position.clone().setY(1.1), 0xcccccc);
+        hitAny=true;
+      }
+    }
+    for(const [,rp] of this.remotePlayers){ // 联机：近战命中（射手权威）
+      if(!rp.mesh) continue;
+      const to=rp.mesh.position.clone().sub(this.pos); to.y=0;
+      const d=to.length();
+      if(d<MELEE.range && to.normalize().dot(fwd)>0.35){
+        this.opts.net?.sendHit(rp.id, MELEE.dmg);
+        this.showHitMarker(false); hitAny=true;
+      }
+    }
+    this.sfx.beep(hitAny?820:150, hitAny?0.12:0.06, hitAny?0.4:0.15);
+  }
+
   startReload(){
     const w=this.weapon;
     if(this.reloading>0||this.ammo[this.wkey]>=w.mag||this.reserve[w.ammo]<=0) return;
@@ -549,6 +598,17 @@ export class Game {
       if(e.t>=e.life){ this.scene.remove(e.obj); this.effects.splice(i,1); }
     }
     if(this.muzzleFlash) this.muzzleFlash.material.opacity=Math.max(0,this.muzzleFlash.material.opacity-dt*12);
+    // 平底锅挥击动画
+    if(this.swingT>0){
+      this.swingT=Math.max(0,this.swingT-dt);
+      const p=1-this.swingT/0.3;
+      if(this.panGroup){
+        this.panGroup.rotation.x=-Math.sin(Math.min(p,1)*Math.PI)*1.35;
+        this.panGroup.position.z=-0.25*Math.sin(Math.min(p,1)*Math.PI);
+      }
+    } else if(this.panGroup){
+      this.panGroup.rotation.x*=0.7; this.panGroup.position.z*=0.7;
+    }
     // 弹孔：10 秒后开始淡出
     const now=performance.now();
     for(let i=this.decals.length-1;i>=0;i--){

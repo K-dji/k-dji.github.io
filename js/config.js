@@ -111,9 +111,9 @@ export const SKIN_TONES = {
   bronze:{ name:'古铜', color:'#8d5a3b' },
 };
 
-// 武器皮肤（替换枪身颜色，emissive 自发光）
+// 武器皮肤（替换枪身颜色，emissive 自发光；默认为黑色）
 export const WEAPON_SKINS = {
-  none:   { name:'默认涂装', price:0,    color:0x1e2228, emissive:0x000000 },
+  none:   { name:'默认涂装', price:0,    color:0x111111, emissive:0x000000 },
   carbon: { name:'碳纤维',   price:400,  color:0x2b2b30, emissive:0x000000 },
   camo:   { name:'丛林迷彩', price:500,  color:0x4a5d3a, emissive:0x000000 },
   gold:   { name:'鎏金龙纹', price:600,  color:0xc9a13b, emissive:0x523c00 },
@@ -121,26 +121,37 @@ export const WEAPON_SKINS = {
   lava:   { name:'熔岩 core',price:1000, color:0x3a1408, emissive:0xa83214 },
 };
 
-// 药物皮肤（急救包外观）
+// 药物皮肤（急救包外观；默认黑色）
 export const MED_SKINS = {
-  classic: { name:'经典急救包', price:0,   color:0xd94a3a },
+  classic: { name:'默认急救包', price:0,   color:0x141414 },
   military:{ name:'军规绿包',   price:300, color:0x3f7a3f },
   gold:    { name:'黄金药箱',   price:500, color:0xd8a832 },
 };
 
-// 饮料皮肤（能量饮料外观）
+// 饮料皮肤（能量饮料外观；默认黑色）
 export const DRINK_SKINS = {
-  classic:{ name:'经典饮料', price:0,   color:0xff8c2a },
+  classic:{ name:'默认饮料', price:0,   color:0x141414 },
   cola:   { name:'快乐碳酸', price:200, color:0x7a3a1a },
   gold:   { name:'金色补剂', price:500, color:0xe8b83a },
 };
 
-// 投掷物皮肤（统一外观主题）
+// 投掷物皮肤（手雷/烟雾/震爆弹/燃烧瓶 统一外观主题；默认黑色）
 export const THROWABLE_SKINS = {
-  classic:{ name:'标准军规', price:0,   frag:0x3a5a2f, smoke:0x6a6a6a, flash:0x9aa0a8, molotov:0xb85a1a },
+  classic:{ name:'默认军规', price:0,   frag:0x141414, smoke:0x222222, flash:0x2e2e2e, molotov:0x141414 },
   camo:   { name:'丛林迷彩', price:300, frag:0x4a5d2a, smoke:0x5a6a4a, flash:0x8a9a7a, molotov:0xa86a2a },
   neon:   { name:'霓虹风暴', price:600, frag:0x18c8e8, smoke:0x48c8d8, flash:0xd8f8ff, molotov:0x28e8b8 },
   gold:   { name:'鎏金荣耀', price:900, frag:0xd8a832, smoke:0xc8b878, flash:0xf8e8b8, molotov:0xe8982a },
+};
+
+// 近战武器：平底锅（4 号槽常驻；默认黑色）
+export const MELEE = { key:'pan', name:'平底锅', dmg:80, range:2.6, cd:0.85 };
+export const MELEE_SKINS = {
+  none:  { name:'默认铁锅', price:0,    color:0x111111, emissive:0x000000 },
+  carbon:{ name:'碳纤维锅', price:400,  color:0x2b2b30, emissive:0x000000 },
+  camo:  { name:'迷彩锅',   price:500,  color:0x4a5d3a, emissive:0x000000 },
+  gold:  { name:'鎏金龙纹锅',price:800, color:0xc9a13b, emissive:0x523c00 },
+  neon:  { name:'霓虹脉冲锅',price:1000,color:0x101820, emissive:0x1899cc },
+  lava:  { name:'熔岩之锅', price:1500, color:0x3a1408, emissive:0xa83214 },
 };
 
 // 投掷物
@@ -169,6 +180,11 @@ export const CRATE_POOL = [
   { kind:'throwableSkin', id:'camo',w:10 },
   { kind:'throwableSkin', id:'neon',w:4  },
   { kind:'throwableSkin', id:'gold',w:3  },
+  { kind:'panSkin', id:'carbon', w:10 },
+  { kind:'panSkin', id:'camo',   w:8  },
+  { kind:'panSkin', id:'gold',   w:4  },
+  { kind:'panSkin', id:'neon',   w:3  },
+  { kind:'panSkin', id:'lava',   w:2  },
 ];
 export const CRATE_PRICE = 400;
 
