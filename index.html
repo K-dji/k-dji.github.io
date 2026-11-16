@@ -48,23 +48,27 @@
       <div id="auth-right">
         <div id="auth-box" class="panel">
           <div id="auth-tabs">
-            <div class="tab on" data-tab="login">登 录</div>
-            <div class="tab" data-tab="register">注 册</div>
+            <div class="tab on" data-tab="login" data-i18n="tab_login">登 录</div>
+            <div class="tab" data-tab="register" data-i18n="tab_register">注 册</div>
           </div>
           <div class="auth-form on" id="form-login">
             <input id="login-user" placeholder="账号" autocomplete="username">
             <input id="login-pass" type="password" placeholder="密码" autocomplete="current-password">
-            <button class="btn" id="btn-login">进入战场</button>
-            <button class="btn ghost" id="btn-guest">⚡ 游客秒玩（免登录，进度不保存）</button>
+            <button class="btn" id="btn-login" data-i18n="btn_login">进入战场</button>
+            <button class="btn ghost" id="btn-guest" data-i18n="btn_guest">⚡ 游客秒玩（免登录，进度不保存）</button>
             <div id="auth-msg"></div>
-            <div id="auth-hint">注册需邀请码 · 密码加密存储</div>
+            <div id="auth-hint" data-i18n="hint">注册需邀请码 · 密码加密存储</div>
           </div>
           <div class="auth-form" id="form-register">
-            <input id="reg-user" placeholder="账号（3~16 位字母数字）">
-            <input id="reg-pass" type="password" placeholder="密码（至少 8 位）">
-            <input id="reg-pass2" type="password" placeholder="确认密码">
-            <input id="reg-invite" placeholder="邀请码（必填，用于限制注册）">
-            <button class="btn" id="btn-register">注册并登录</button>
+            <input id="reg-user" data-i18n-ph="ph_user" placeholder="账号（3~16 位字母数字）">
+            <input id="reg-pass" type="password" data-i18n-ph="ph_pass" placeholder="密码（至少 8 位）">
+            <input id="reg-pass2" type="password" data-i18n-ph="ph_pass2" placeholder="确认密码">
+            <input id="reg-invite" data-i18n-ph="ph_invite" placeholder="邀请码（必填，用于限制注册）">
+            <div id="country-grid-wrap">
+              <div style="font-size:12px;color:var(--sub);margin-bottom:6px" data-i18n="choose_country">选择国家（切换游戏语言）</div>
+              <div id="country-grid"></div>
+            </div>
+            <button class="btn" id="btn-register" data-i18n="reg_btn">注册并登录</button>
             <div id="auth-msg2" style="min-height:20px;font-size:13px;color:var(--danger);text-align:center"></div>
           </div>
         </div>
@@ -118,14 +122,15 @@
         <button class="btn" id="start-game">开始游戏</button>
       </div>
       <div id="lobby-side">
-        <button class="btn" id="btn-multi">联机大厅</button>
-        <button class="btn ghost" id="btn-store">商 城</button>
-        <button class="btn ghost" id="btn-crate">军 需</button>
-        <button class="btn ghost" id="btn-warehouse">仓 库</button>
-        <button class="btn ghost" id="btn-pass">通行证</button>
-        <button class="btn ghost" id="btn-rank">排行榜</button>
+        <button class="btn" id="btn-multi" data-i18n="btn_multi">联机大厅</button>
+        <button class="btn ghost" id="btn-store" data-i18n="btn_store">商 城</button>
+        <button class="btn ghost" id="btn-crate" data-i18n="btn_crate">军 需</button>
+        <button class="btn ghost" id="btn-warehouse" data-i18n="btn_warehouse">仓 库</button>
+        <button class="btn ghost" id="btn-pass" data-i18n="btn_pass">通行证</button>
+        <button class="btn ghost" id="btn-rank" data-i18n="btn_rank">排行榜</button>
+        <button class="btn ghost" id="btn-friends" data-i18n="btn_friends">好 友</button>
         <div class="panel" style="flex:1;font-size:13px;color:var(--sub)">
-          <div style="color:var(--gold);font-weight:700;margin-bottom:8px">作战情报</div>
+          <div style="color:var(--gold);font-weight:700;margin-bottom:8px" data-i18n="lobby_info">作战情报</div>
           <div id="lobby-stats">关卡进度 0/10<br>无尽最佳 0 波</div>
         </div>
       </div>
@@ -169,11 +174,11 @@
     <div id="pause-menu">
       <div class="panel col" style="width:300px">
         <h2 class="title-glow" style="text-align:center">暂 停</h2>
-        <button class="btn" id="btn-resume">继续战斗</button>
-        <button class="btn ghost" id="btn-pause-settings">设置</button>
-        <button class="btn ghost" id="btn-pause-keymap">键位布局</button>
-        <button class="btn ghost" id="btn-pause-fs">全 屏</button>
-        <button class="btn danger" id="btn-quit">离开战斗</button>
+        <button class="btn" id="btn-resume" data-i18n="pause_resume">继续战斗</button>
+        <button class="btn ghost" id="btn-pause-settings" data-i18n="btn_settings">设置</button>
+        <button class="btn ghost" id="btn-pause-keymap" data-i18n="btn_keymap">键位布局</button>
+        <button class="btn ghost" id="btn-pause-fs" data-i18n="btn_fullscreen">全 屏</button>
+        <button class="btn danger" id="btn-quit" data-i18n="pause_quit">离开战斗</button>
       </div>
     </div>
 
@@ -182,8 +187,8 @@
         <div id="over-title">胜利</div>
         <div id="over-stats"></div>
         <div id="over-coins" style="color:var(--gold);font-weight:700"></div>
-        <button class="btn" id="btn-again">再来一局</button>
-        <button class="btn ghost" id="btn-back-lobby">返回大厅</button>
+        <button class="btn" id="btn-again" data-i18n="again">再来一局</button>
+        <button class="btn ghost" id="btn-back-lobby" data-i18n="back_lobby">返回大厅</button>
       </div>
     </div>
   </div>
@@ -351,6 +356,27 @@
       <div class="row" style="margin-top:14px;justify-content:flex-end">
         <button class="btn ghost" id="btn-invite-no">不同意</button>
         <button class="btn ok" id="btn-invite-yes">同 意</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 好友 ================= -->
+  <div class="modal" id="friends-modal">
+    <div class="box panel">
+      <h2 data-i18n="friends_title">好 友</h2>
+      <div class="row" style="margin-bottom:10px">
+        <input id="friend-id" data-i18n-ph="friend_id_ph" placeholder="输入好友 ID（账号名）" style="flex:1">
+        <button class="btn ok" id="btn-friend-add" data-i18n="add_btn">添 加</button>
+      </div>
+      <div style="font-size:12px;color:var(--sub);margin-bottom:8px" data-i18n="friends_hint">提示：默认好友「kaobei」为官方账号</div>
+      <div style="font-size:13px;color:var(--sub);margin-bottom:6px" data-i18n="my_friends">我的好友</div>
+      <div id="friends-list" style="max-height:170px;overflow-y:auto"></div>
+      <div style="font-size:13px;color:var(--sub);margin:10px 0 6px" data-i18n="incoming">收到的申请</div>
+      <div id="friend-requests-in" style="max-height:110px;overflow-y:auto"></div>
+      <div style="font-size:13px;color:var(--sub);margin:10px 0 6px" data-i18n="outgoing">已发出的申请</div>
+      <div id="friend-requests-out" style="max-height:90px;overflow-y:auto"></div>
+      <div class="row" style="justify-content:flex-end;margin-top:10px">
+        <button class="btn ghost" id="btn-friends-close" data-i18n="crate_close">关 闭</button>
       </div>
     </div>
   </div>

@@ -10,6 +10,7 @@ import { Game } from './game.js';
 import { AIManager } from './ai.js';
 import { RoomClient, PresencePoll } from './net.js';
 import { isTouch, TouchControls, suppressTouchFeedback } from './touch.js';
+import { applyLang, t, FLAGS, getLang } from './i18n.js';
 
 const $=id=>document.getElementById(id);
 const show=id=>{ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); };
@@ -75,6 +76,24 @@ async function savePrefs(){
 // 登录 / 注册
 // ============================================================
 function initAuth(){
+  // 国旗选择（注册）：点击即切换语言并记忆
+  const grid=$('country-grid');
+  const savedLang=getLang();
+  grid.innerHTML='';
+  for(const [code,flag,name] of FLAGS){
+    const cell=document.createElement('div');
+    cell.className='country-cell'+(code===savedLang?' on':'');
+    cell.textContent=flag; cell.title=name; cell.dataset.lang=code;
+    cell.onclick=()=>{
+      applyLang(code);
+      [...grid.children].forEach(c=>c.classList.remove('on'));
+      cell.classList.add('on');
+      state.prefs.country=code; state.prefs.lang=code;
+      localStorage.setItem('pe3d_prefs', JSON.stringify(state.prefs));
+    };
+    grid.appendChild(cell);
+  }
+  applyLang(savedLang);
   document.querySelectorAll('#auth-tabs .tab').forEach(tab=>{
     tab.onclick=()=>{
       document.querySelectorAll('#auth-tabs .tab').forEach(t=>t.classList.remove('on'));
@@ -105,7 +124,10 @@ function initAuth(){
     if(!inv) return $('auth-msg2').textContent='注册必须输入邀请码';
     try{
       const data=await api('/auth/register',{username:u,password:p,inviteCode:inv});
+      state.prefs.country=localStorage.getItem('pe3d_lang')||'zh';
+      state.prefs.lang=state.prefs.country;
       afterLogin(data, true);
+      savePrefs();   // 同步语言/国旗到服务器
     }catch(e){ $('auth-msg2').textContent=e.message; }
   };
 }
@@ -114,10 +136,12 @@ async function afterLogin(data, isNew=false){
   localStorage.setItem('pe3d_token',data.token);
   localStorage.setItem('pe3d_user',JSON.stringify(data.user));
   try{
-    const me=await api('/auth/me');
-    state.user=me.user; state.owned=me.owned||[];
-    if(me.progress){ Object.assign(state, {unlocked:me.progress.unlocked, endlessBest:me.progress.endlessBest, totalKills:me.progress.totalKills, xp:me.progress.xp||0}); }
-    if(Object.keys(me.user.prefs||{}).length) state.prefs=me.user.prefs;
+      const me=await api('/auth/me');
+      state.user=me.user; state.owned=me.owned||[];
+      if(me.progress){ Object.assign(state, {unlocked:me.progress.unlocked, endlessBest:me.progress.endlessBest, totalKills:me.progress.totalKills, xp:me.progress.xp||0}); }
+      // 合并服务器偏好，但保留本地语言/国旗选择
+      const localPrefs={country:state.prefs.country, lang:state.prefs.lang};
+      state.prefs={...(me.user.prefs||{}), ...Object.fromEntries(Object.entries(localPrefs).filter(([,v])=>v))};
   }catch(e){}
   localStorage.setItem('pe3d_prefs', JSON.stringify(state.prefs));
   saveProgressLocal();
@@ -238,8 +262,8 @@ function renderLobbyUser(){
   $('xp-bar').style.width=(into/PASS_XP_PER_LEVEL*100)+'%';
   $('xp-text').textContent=`${into}/${PASS_XP_PER_LEVEL}`;
   $('res-coins').textContent='◈ '+(state.user?.coins??0);
-  $('res-kills').textContent=`击杀 ${state.totalKills}`;
-  $('lobby-stats').innerHTML=`关卡进度 ${Math.min(state.unlocked,LEVELS.length)}/${LEVELS.length}<br>无尽最佳 第 ${state.endlessBest} 波<br>总击杀 ${state.totalKills}<br>通行证 Lv.${lv}`;
+  $('res-kills').textContent=`${t('stats_kills')} ${state.totalKills}`;
+  $('lobby-stats').innerHTML=`${t('stats_level')} ${Math.min(state.unlocked,LEVELS.length)}/${LEVELS.length}<br>${t('stats_endless')} ${state.endlessBest}<br>${t('stats_kills')} ${state.totalKills}<br>${t('stats_pass')} Lv.${lv}`;
 }
 function renderCharStage(){
   $('char-label').textContent=`${(CHAR_SKINS[state.prefs.charSkin||'classic']||CHAR_SKINS.classic).name} · ${(SKIN_TONES[state.prefs.skinTone]||SKIN_TONES.yellow).name}肤色 · ${state.prefs.gender==='female'?'女性':'男性'}`;
@@ -256,7 +280,7 @@ function buildModeCards(){
   for(const m of Object.values(MODES)){
     const el=document.createElement('div');
     el.className='mode-card'+(m.id===state.mode?' on':'');
-    el.innerHTML=`<h3>${m.name}</h3><p>${m.desc}</p>`;
+    el.innerHTML=`<h3>${t('mode_'+m.id)}</h3><p>${t('mode_'+m.id+'_d')}</p>`;
     el.onclick=()=>{
       state.mode=m.id;
       document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('on'));
@@ -606,7 +630,7 @@ function fmtTime(s){ const m=Math.floor(s/60),ss=Math.floor(s%60); return `${Str
 
 function handleOver(r){
   const g=state.game;
-  $('over-title').textContent = r.win? (r.timeout?'时间到 · 任务完成':'WIN · 胜利') : '失败';
+  $('over-title').textContent = r.win? (r.timeout? t('win')+' · OK' : t('win')) : t('lose');
   $('over-title').style.color = r.win? 'var(--gold)':'var(--danger)';
   let extra='';
   if(g.mode==='level') extra=`第 ${r.level} 关 ${r.win?'通过':'未通过'}`;
@@ -787,6 +811,65 @@ function renderRoom(net){
 }
 
 // ============================================================
+// 好友系统
+// ============================================================
+$('btn-friends').onclick=()=>{ openFriends(); };
+$('btn-friends-close').onclick=()=>modal('friends-modal',false);
+$('btn-friend-add').onclick=async()=>{
+  const name=$('friend-id').value.trim();
+  if(!name) return;
+  try{
+    await api('/friends',{action:'add',name});
+    $('friend-id').value='';
+    await renderFriends();
+  }catch(e){ alert(e.message); }
+};
+async function openFriends(){
+  modal('friends-modal',true);
+  await renderFriends();
+}
+async function renderFriends(){
+  if(state.guest){ $('friends-list').innerHTML=`<div class="friend-row"><span style="color:var(--sub)">游客模式无法使用好友功能</span></div>`; return; }
+  try{
+    const data=await api('/friends');
+    const fl=$('friends-list'); fl.innerHTML='';
+    if(!data.friends.length) fl.innerHTML=`<div class="friend-row"><span style="color:var(--sub)">${t('no_friends')}</span></div>`;
+    for(const f of data.friends){
+      const el=document.createElement('div'); el.className='friend-row';
+      el.innerHTML=`<span class="dot ${f.online?'on':''}"></span>
+        <span class="nm" style="${f.name==='kaobei'?'color:var(--gold)':''}">${f.name}${f.name==='kaobei'?' ★':''}</span>
+        <span class="st">${f.online?t('online'):t('offline')}</span>`;
+      const inv=document.createElement('button'); inv.className='btn ghost small'; inv.textContent=t('invite_room');
+      inv.disabled=!(f.online&&state.net?.isHost);
+      inv.onclick=()=>{ state.net?.hostInvite(f.name); inv.textContent=t('friend_added'); inv.disabled=true; };
+      const rm=document.createElement('button'); rm.className='btn danger small'; rm.textContent=t('remove_friend');
+      rm.onclick=async()=>{ await api('/friends',{action:'remove',name:f.name}); renderFriends(); };
+      el.append(inv,rm); fl.appendChild(el);
+    }
+    const fin=$('friend-requests-in'); fin.innerHTML='';
+    if(!data.incoming.length) fin.innerHTML=`<div class="friend-row"><span style="color:var(--sub)">${t('no_requests')}</span></div>`;
+    for(const r of data.incoming){
+      const el=document.createElement('div'); el.className='friend-row';
+      el.innerHTML=`<span class="nm">${r.name}</span>`;
+      const yes=document.createElement('button'); yes.className='btn ok small'; yes.textContent=t('accept');
+      yes.onclick=async()=>{ await api('/friends',{action:'respond',id:r.id,accept:true}); renderFriends(); };
+      const no=document.createElement('button'); no.className='btn danger small'; no.textContent=t('reject');
+      no.onclick=async()=>{ await api('/friends',{action:'respond',id:r.id,accept:false}); renderFriends(); };
+      el.append(yes,no); fin.appendChild(el);
+    }
+    const fout=$('friend-requests-out'); fout.innerHTML='';
+    if(!data.outgoing.length) fout.innerHTML=`<div class="friend-row"><span style="color:var(--sub)">${t('no_requests')}</span></div>`;
+    for(const r of data.outgoing){
+      const el=document.createElement('div'); el.className='friend-row';
+      el.innerHTML=`<span class="nm">${r.name}</span><span class="st">${t('wait_approve')}…</span>`;
+      fout.appendChild(el);
+    }
+  }catch(e){
+    $('friends-list').innerHTML=`<div class="friend-row"><span style="color:var(--sub)">${e.message}</span></div>`;
+  }
+}
+
+// ============================================================
 // 启动
 // ============================================================
 async function boot(){
@@ -811,7 +894,9 @@ async function boot(){
       const me=await apiWithTimeout('/auth/me', 4500);
       state.user=me.user; state.owned=me.owned||[];
       if(me.progress){ state.unlocked=me.progress.unlocked; state.endlessBest=me.progress.endlessBest; state.totalKills=me.progress.totalKills; state.xp=me.progress.xp||0; }
-      if(Object.keys(me.user.prefs||{}).length) state.prefs=me.user.prefs;
+      const localPrefs={country:state.prefs.country, lang:state.prefs.lang};
+      state.prefs={...(me.user.prefs||{}), ...Object.fromEntries(Object.entries(localPrefs).filter(([,v])=>v))};
+      localStorage.setItem('pe3d_prefs', JSON.stringify(state.prefs));
     }
   }catch(e){ state.token=''; localStorage.removeItem('pe3d_token'); }
   clearInterval(t); fill.style.width='100%';

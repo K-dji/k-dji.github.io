@@ -343,3 +343,15 @@ body.touch #hud-tip { bottom:64px; max-width:70vw; }
   #game-logo { font-size:34px; }
   #notice-ticker { font-size:11px; }
 }
+
+/* ---------- 国家国旗 / 好友 ---------- */
+#country-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; }
+.country-cell { padding:6px 2px; font-size:20px; text-align:center; cursor:pointer;
+  background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.15); border-radius:4px; }
+.country-cell.on { border-color:var(--gold); background:rgba(240,165,58,.18); box-shadow:0 0 8px rgba(240,165,58,.4); }
+.friend-row { display:flex; align-items:center; gap:8px; padding:8px 10px; margin-bottom:6px;
+  background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.1); font-size:14px; }
+.friend-row .dot { width:8px; height:8px; border-radius:50%; background:#666; flex-shrink:0; }
+.friend-row .dot.on { background:var(--ok); box-shadow:0 0 6px var(--ok); }
+.friend-row .nm { flex:1; }
+.friend-row .st { font-size:11px; color:var(--sub); }
