@@ -18,16 +18,30 @@ const DEFAULT_BTNS = [
 
 export function isTouch(){ return ('ontouchstart' in window) || navigator.maxTouchPoints>0; }
 
-// 移动端全局：禁双击缩放/选择复制/长按菜单，按钮按压无浏览器反馈
+// 移动端全局：禁双击缩放 / 禁长按菜单 / 禁选择复制 / 禁按压反馈
+// 输入框（账号、密码、聊天等）保留正常编辑能力
 export function suppressTouchFeedback(){
-  document.addEventListener('dblclick', e=>{ if(!e.target.closest('input,select,textarea')) e.preventDefault(); });
-  document.addEventListener('contextmenu', e=>{ if(e.target.closest('#touch-ui')) e.preventDefault(); });
-  document.addEventListener('selectstart', e=>{ if(e.target.closest('#touch-ui')) e.preventDefault(); });
-  // 防止 iOS 双击缩放：拦截快速二次 touchend
-  let lastTap=0;
+  const isEditable=e=>!!(e.target.closest&&e.target.closest('input,select,textarea,[contenteditable]'));
+  // 双击：不缩放、不选词
+  document.addEventListener('dblclick', e=>{ if(!isEditable(e)) e.preventDefault(); });
+  // 长按菜单（安卓）
+  document.addEventListener('contextmenu', e=>{ if(!isEditable(e)) e.preventDefault(); });
+  // 选择文本（全局 user-select:none 已挡，这里双保险）
+  document.addEventListener('selectstart', e=>{ if(!isEditable(e)) e.preventDefault(); });
+  // 复制动作兜底拦截
+  document.addEventListener('copy', e=>{ if(!isEditable(e)) e.preventDefault(); });
+  // 长按保护：按下 500ms 未松开且不在输入框 → 记录（系统手势由 CSS+contextmenu 拦截）
+  let pressT=null;
+  document.addEventListener('touchstart', e=>{
+    if(isEditable(e)){ clearTimeout(pressT); pressT=null; return; }
+    pressT=setTimeout(()=>{ pressT=null; }, 500);
+  }, {passive:true});
+  document.addEventListener('touchmove', ()=>{ clearTimeout(pressT); pressT=null; }, {passive:true});
   document.addEventListener('touchend', e=>{
+    clearTimeout(pressT); pressT=null;
+    // 300ms 内二次点触：拦截（防双击缩放/选词）
     const now=Date.now();
-    if(now-lastTap<300 && e.target.closest('#touch-ui')) e.preventDefault();
+    if(now-lastTap<300 && !isEditable(e)) e.preventDefault();
     lastTap=now;
   }, {passive:false});
 }

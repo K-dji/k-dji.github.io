@@ -14,7 +14,8 @@
   --danger: #e04848;
   --ok: #4fc26a;
 }
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent;
+    user-select:none !important; -webkit-user-select:none !important; -webkit-touch-callout:none !important; }
 html, body { width:100%; height:100%; overflow:hidden; background:#050a14; color:var(--txt);
   font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; }
 #app { position:fixed; inset:0; }
@@ -364,3 +365,10 @@ body.touch #hud-tip { bottom:64px; max-width:70vw; }
 #admin-row .badge { font-size:10px; padding:2px 6px; border-radius:2px; font-weight:700; }
 #admin-row .badge.on { background:var(--ok); color:#08210f; }
 #admin-row .badge.off { background:rgba(255,255,255,.15); color:var(--sub); }
+
+/* ---------- 移动端：彻底禁用按压反馈/选择复制（全局） ---------- */
+html, body { -webkit-user-select:none !important; user-select:none !important;
+  -webkit-touch-callout:none !important; touch-action:manipulation; }
+body.touch .btn:active, body.touch .btn:hover { transform:none !important; filter:none !important; }
+body.touch .tbtn:active, body.touch .wslot:active, body.touch .tbtn-mini:active { transform:none !important; }
+input, select, textarea { user-select:text !important; -webkit-user-select:text !important; -webkit-touch-callout:default !important; }
