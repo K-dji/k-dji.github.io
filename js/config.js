@@ -145,6 +145,9 @@ export const THROWABLE_SKINS = {
 
 // 近战武器：平底锅（4 号槽常驻；默认黑色）
 export const MELEE = { key:'pan', name:'平底锅', dmg:80, range:2.6, cd:0.85 };
+
+// 部位伤害倍率（头部最高）
+export const HIT_MULT = { head:2.5, chest:1.1, stomach:0.95, limb:0.7 };
 export const MELEE_SKINS = {
   none:  { name:'默认铁锅', price:0,    color:0x111111, emissive:0x000000 },
   carbon:{ name:'碳纤维锅', price:400,  color:0x2b2b30, emissive:0x000000 },

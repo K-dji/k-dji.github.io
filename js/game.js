@@ -2,7 +2,7 @@
 // peace-strike-3d · 游戏核心引擎（Three.js 第一人称射击）
 // ============================================================
 import * as THREE from '../vendor/three.module.min.js';
-import { WEAPONS, MAP_BY_ID, LEVELS, THROWABLES, WEAPON_SKINS, MED_SKINS, DRINK_SKINS, THROWABLE_SKINS, SKIN_TONES, MELEE, MELEE_SKINS } from './config.js';
+import { WEAPONS, MAP_BY_ID, LEVELS, THROWABLES, WEAPON_SKINS, MED_SKINS, DRINK_SKINS, THROWABLE_SKINS, SKIN_TONES, MELEE, MELEE_SKINS, HIT_MULT } from './config.js';
 
 const V3 = (x=0,y=0,z=0)=>new THREE.Vector3(x,y,z);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -78,12 +78,16 @@ export function createHumanoid(color, hero=false){
       new THREE.MeshLambertMaterial({color:0xffd34d, emissive:0x8a6300}));
     crown.position.y=2.02; g.add(crown);
   }
-  // 命中判定体（胸腔 + 头）——不渲染但可被射线命中
-  const hitBody=new THREE.Mesh(new THREE.BoxGeometry(0.62,0.85,0.4),
-    new THREE.MeshBasicMaterial({transparent:true, opacity:0, depthWrite:false, colorWrite:false}));
-  hitBody.position.y=1.1; g.add(hitBody);
-  body.userData={part:'body'}; head.userData={part:'head'};
-  g.userData.hitMeshes=[hitBody, head];
+  // 命中判定体（四档部位：头 / 胸 / 腹 / 四肢）——不渲染但可被射线命中
+  const matHit=new THREE.MeshBasicMaterial({transparent:true, opacity:0, depthWrite:false, colorWrite:false});
+  const chest=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.46,0.4), matHit);
+  chest.position.y=1.34; chest.userData.part='chest'; g.add(chest);
+  const stomach=new THREE.Mesh(new THREE.BoxGeometry(0.55,0.42,0.38), matHit);
+  stomach.position.y=0.92; stomach.userData.part='stomach'; g.add(stomach);
+  head.userData.part='head';
+  armL.userData.part='limb'; armR.userData.part='limb';
+  legL.userData.part='limb'; legR.userData.part='limb';
+  g.userData.hitMeshes=[head, chest, stomach, armL, armR, legL, legR];
   return g;
 }
 
@@ -362,7 +366,7 @@ export class Game {
       for(const b of this.bots){
         if(b.hp<=0) continue;
         const d=b.mesh.position.distanceTo(pos);
-        if(d<R) this.hitBot(b, cfg.dmg*(1-d/R/1.4), false);
+        if(d<R) this.hitBot(b, cfg.dmg*(1-d/R/1.4), 'chest');
       }
       const pd=this.pos.distanceTo(pos);
       if(pd<R*1.2) this.damagePlayer(cfg.dmg*0.5*(1-pd/(R*1.4)));
@@ -419,7 +423,7 @@ export class Game {
       if(now>f.until){ this.scene.remove(f.group); this.fires.splice(i,1); continue; }
       for(const s of f.group.children) s.material.opacity=0.6+Math.random()*0.3;
       for(const b of this.bots){
-        if(b.hp>0 && b.mesh.position.distanceTo(f.center)<f.r) this.hitBot(b, f.dps*dt, false);
+        if(b.hp>0 && b.mesh.position.distanceTo(f.center)<f.r) this.hitBot(b, f.dps*dt, 'body');
       }
       if(this.alive && this.pos.distanceTo(f.center)<f.r) this.damagePlayer(f.dps*dt);
     }
@@ -499,14 +503,14 @@ export class Game {
     if(!hits[0]) return;
     const hit=hits[0];
     const ud=hit.object.userData;
-    if(ud.bot){ // 命中 AI 敌人
-      const isHead=ud.part==='head';
-      let dmg=w.dmg*(isHead?2.3:1);
+    if(ud.bot){ // 命中 AI 敌人：部位伤害（头2.5/胸1.1/腹0.95/四肢0.7）
+      const part=ud.part||'body';
+      let dmg=w.dmg*(HIT_MULT[part]||1);
       if(hit.distance>w.range) dmg*=0.55; else if(hit.distance>w.range*0.6) dmg*=0.8;
-      this.hitBot(ud.bot,dmg,isHead);
-    } else if(ud.remote){ // 命中远程玩家（联机：射手权威）
-      this.opts.net?.sendHit(ud.remote.id, w.dmg*(ud.part==='head'?2.3:1));
-      this.showHitMarker(false);
+      this.hitBot(ud.bot,dmg,part);
+    } else if(ud.remote){ // 命中远程玩家（联机：射手权威，含部位）
+      this.opts.net?.sendHit(ud.remote.id, w.dmg*(HIT_MULT[ud.part]||1), ud.part);
+      this.showHitMarker(ud.part==='head');
     } else {
       // 打在障碍物/地面上：留弹孔
       const normal=hit.face? hit.face.normal.clone().transformDirection(hit.object.matrixWorld) : V3(0,1,0);
@@ -528,8 +532,9 @@ export class Game {
       this.scene.remove(old.obj); old.obj.geometry.dispose(); old.obj.material.dispose();
     }
   }
-  hitBot(bot,dmg,isHead,silent){
+  hitBot(bot,dmg,part='body',silent){
     if(bot.hp<=0) return;
+    const isHead=part==='head';
     bot.hp-=dmg;
     if(!silent){ this.showHitMarker(isHead);
       this.addSpark(bot.mesh.position.clone().setY(isHead?1.78:1.05), 0xc23a3a); }
@@ -559,7 +564,7 @@ export class Game {
       const to=b.mesh.position.clone().sub(this.pos); to.y=0;
       const d=to.length();
       if(d<MELEE.range && to.normalize().dot(fwd)>0.35){
-        this.hitBot(b, MELEE.dmg*(0.85+Math.random()*0.3), false);
+        this.hitBot(b, MELEE.dmg*(0.85+Math.random()*0.3), 'chest');
         this.addSpark(b.mesh.position.clone().setY(1.1), 0xcccccc);
         hitAny=true;
       }
@@ -648,9 +653,9 @@ export class Game {
   spawnBot(x,z,strength,idx){
     const mesh=createHumanoid(this.opts.skin==='hero'?0x8a3a3a:0x9a4a3a,false);
     mesh.position.set(x,0,z); this.scene.add(mesh);
-    const head=mesh.userData.hitMeshes[1], body=mesh.userData.hitMeshes[0];
+    const head=mesh.userData.hitMeshes[0];   // hitMeshes[0]=头（部位判定）
     const bot={ id:'b'+Date.now().toString(36)+idx, name:'AI士兵-'+(idx+1),
-      mesh, head, body, hp:100*Math.min(strength,1.6), maxHp:100*Math.min(strength,1.6),
+      mesh, head, hp:100*Math.min(strength,1.6), maxHp:100*Math.min(strength,1.6),
       strength, yaw:0, state:'patrol', wp:V3(x,0,z), shootCd:rand(0.5,2), burst:0,
       cmd:{move:[0,0],shoot:false,until:0}, losCache:0, los:false };
     // 透视标记（作弊：头顶红色标记，默认隐藏）
@@ -658,7 +663,8 @@ export class Game {
       new THREE.MeshBasicMaterial({color:0xff2020, transparent:true, opacity:0.85, depthTest:false}));
     esp.position.y=2.25; esp.visible=false; mesh.add(esp);
     bot.esp=esp;
-    body.userData.bot=bot; head.userData.bot=bot;
+    // 所有部位判定体（头/胸/腹/四肢）都挂上 bot 引用
+    mesh.userData.hitMeshes.forEach(m=>{ m.userData.bot=bot; });
     this.bots.push(bot);
     return bot;
   }
@@ -705,7 +711,7 @@ export class Game {
     const mesh=createHumanoid(p.skin==='hero'?0xffc84d:(p.team===1?0x3a6ab0:0xb03a3a), p.skin==='hero');
     this.scene.add(mesh);
     const ud={part:'remote', remote:p};
-    mesh.userData.hitMeshes.forEach(m=>m.userData=ud);
+    mesh.userData.hitMeshes.forEach(m=>{ m.userData={part:m.userData.part, remote:p}; });
     this.remotePlayers.set(p.id,{...p,mesh,lastSeen:performance.now()});
     this.onTip(`${p.name} 加入了战场`);
   }
@@ -716,8 +722,8 @@ export class Game {
     rp.mesh.rotation.y=st.yaw;
     if(rp.mesh.userData.hp!==st.hp){
       rp.mesh.userData.hp=st.hp;
-      const body=rp.mesh.userData.hitMeshes[0];
-      body.material=body.material.clone(); body.material.color.multiplyScalar(0.8);
+      const chestPart=rp.mesh.userData.hitMeshes.find(m=>m.userData.part==='chest')||rp.mesh.userData.hitMeshes[0];
+      chestPart.material=chestPart.material.clone(); chestPart.material.color.multiplyScalar(0.8);
     }
     if(st.hp<=0) rp.mesh.rotation.z=Math.PI/2; else rp.mesh.rotation.z=0;
   }
