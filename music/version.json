@@ -1,20 +1,20 @@
 {
-  "version": 1,
-  "versionName": "1.0.0",
+  "version": 2,
+  "versionName": "1.0.1",
   "releasedAt": "2026-11-22",
   "forceThreshold": 3,
   "changelog": [
-    "恢复第一版紫蓝原风格",
-    "新增听书模式、猜你喜欢、热门推荐",
-    "网页内分享音乐链接",
-    "移除音乐好友（无账号无需）",
+    "新增听书模式、猜你喜欢、热门推荐、音乐分享",
+    "酷狗概念版风格播放页：唱片机旋转封面、光晕、点赞布局",
+    "修复手机点击蓝色方框、昵称位置与大小",
+    "移除音乐好友（无需账号）",
     "新增 KB 记忆网站与更新分发站"
   ],
   "downloads": {
-    "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.0/KB-Music-native-v1.0.0.apk",
+    "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.1/KB-Music-native-v1.0.0.apk",
     "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.0/KB-Music-1.0.0-installer.exe",
     "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.0/KB-Music-1.0.0-portable.exe"
   },
-  "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.0/KB-Music-native-v1.0.0.apk",
+  "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.1/KB-Music-native-v1.0.0.apk",
   "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.0/KB-Music-1.0.0-installer.exe"
 }
