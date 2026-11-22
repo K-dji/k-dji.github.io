@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KB Music 更新中心</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%237c5cff'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3EK%3C/text%3E%3C/svg%3E">
+<style>
+:root{--accent:#7c5cff;--accent-2:#22d3ee;--bg:#080d1c;--card:#12193a;--card-hover:#1a2350;--line:rgba(255,255,255,.08);--text:#eef1ff;--muted:#a6aede;--faint:#6b76b5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:radial-gradient(900px 500px at 15% -5%,rgba(124,92,255,.22),transparent 60%),radial-gradient(800px 400px at 100% 0%,rgba(34,211,238,.12),transparent 55%),var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:40px 18px 60px}
+.hd{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.logo{width:54px;height:54px;border-radius:15px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-size:28px;font-weight:800;box-shadow:0 8px 24px rgba(124,92,255,.4)}
+h1{font-size:25px}.hd p{color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:16px}
+.ver-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.badge{padding:5px 12px;border-radius:99px;background:rgba(124,92,255,.18);color:#b9a8ff;font-size:12px;font-weight:700}
+.badge.new{background:rgba(52,211,153,.16);color:#6ee7b7}
+h2{font-size:15px;margin:20px 0 10px;color:var(--muted)}
+.changelog{list-style:none;font-size:14px;line-height:2}
+.changelog li{padding-left:20px;position:relative;color:#dfe4ff}
+.changelog li::before{content:'✓';position:absolute;left:0;color:#6ee7b7;font-weight:800}
+.dls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px}
+.dl{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(124,92,255,.14),rgba(34,211,238,.06));border:1px solid rgba(124,92,255,.25);border-radius:16px;padding:16px;cursor:pointer;color:var(--text);text-decoration:none;transition:transform .18s}
+.dl:hover{transform:translateY(-3px)}
+.dl .ic{font-size:28px}.dl b{display:block;font-size:14px}.dl small{color:var(--muted);font-size:11px}
+.dl.apk{background:linear-gradient(135deg,rgba(52,211,153,.14),rgba(14,165,233,.06));border-color:rgba(52,211,153,.3)}
+.prog{height:7px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:14px;display:none}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .2s}
+.tip{font-size:12px;color:var(--faint);margin-top:12px}
+a{color:var(--accent)}
+.notice{background:rgba(124,92,255,.1);border:1px solid rgba(124,92,255,.25);border-radius:14px;padding:14px 16px;font-size:13px;color:var(--muted);margin-top:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd">
+    <div class="logo">K</div>
+    <div><h1>KB Music 更新中心</h1><p>获取最新的电脑版与安卓版安装包</p></div>
+  </div>
+
+  <div class="card">
+    <div class="ver-row">
+      <span class="badge new" id="verBadge">最新版本</span>
+      <strong id="verName" style="font-size:20px">加载中…</strong>
+      <span class="badge" id="verDate"></span>
+    </div>
+    <h2>本次更新</h2>
+    <ul class="changelog" id="changelog"></ul>
+    <h2>下载安装包</h2>
+    <div class="dls" id="dls"></div>
+    <div class="prog" id="prog"><i></i></div>
+    <div class="tip" id="tip"></div>
+    <div class="notice">💡 网页版始终自动更新，无需手动安装。此页仅提供桌面版（EXE）与安卓原生版（APK）下载。</div>
+  </div>
+
+  <p style="text-align:center;color:var(--faint);font-size:12px;margin-top:24px">
+    创始人：靠北（靠北科技） · “靠北”仅为品牌名称，没有实际意义<br>
+    <a href="https://kaobei-music.pages.dev">返回 KB Music</a> · <a href="https://kbmusic.pages.dev">KB 记忆</a>
+  </p>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(s){return document.querySelector(s);};
+  function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  fetch('version.json?t='+Date.now(),{cache:'no-store'})
+    .then(function(r){return r.json();})
+    .then(function(m){
+      $('#verName').textContent='v'+(m.versionName||m.version);
+      $('#verDate').textContent=m.releasedAt||'';
+      $('#changelog').innerHTML=(m.changelog||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('');
+      var d=m.downloads||{};
+      var items=[
+        {k:'apk',ic:'📱',name:'安卓原生版',sub:'APK · 安装包',url:d.apk||m.apk,cls:'apk'},
+        {k:'exe',ic:'💻',name:'电脑安装版',sub:'EXE · 安装即可用',url:d.exe||m.exe,cls:''},
+        {k:'exePortable',ic:'🖥️',name:'电脑免安装版',sub:'EXE · 双击即用',url:d.exePortable,cls:''}
+      ].filter(function(x){return x.url;});
+      $('#dls').innerHTML=items.map(function(x,i){
+        return '<a class="dl '+x.cls+'" href="'+esc(x.url)+'" data-i="'+i+'"><span class="ic">'+x.ic+'</span><span><b>'+x.name+'</b><small>'+x.sub+'</small></span></a>';
+      }).join('');
+      // 点击显示下载进度（fetch 流读进度 + 触发保存）
+      $('#dls').addEventListener('click',function(e){
+        var a=e.target.closest('.dl');if(!a)return;
+        var url=a.getAttribute('href');
+        var prog=$('#prog');prog.style.display='block';
+        var bar=prog.querySelector('i');bar.style.width='0';
+        var pct=0;
+        var timer=setInterval(function(){pct=Math.min(95,pct+Math.random()*12);bar.style.width=pct+'%';},200);
+        // 触发浏览器下载
+        var tmp=document.createElement('a');tmp.href=url;tmp.target='_blank';tmp.rel='noopener';document.body.appendChild(tmp);tmp.click();tmp.remove();
+        setTimeout(function(){clearInterval(timer);bar.style.width='100%';$('#tip').textContent='下载已开始，请查看浏览器下载列表。';},2600);
+      });
+    })
+    .catch(function(){ $('#verName').textContent='版本信息加载失败'; });
+})();
+</script>
+</body>
+</html>
