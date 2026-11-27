@@ -1057,7 +1057,29 @@ button:focus,a:focus,.icon-btn:focus{-webkit-tap-highlight-color:transparent!imp
   .ab-cover{width:70px;height:94px}
   .ab-ep-head{flex-wrap:wrap}
 }
-/* KB Music 音乐库 / 歌单 / 搜索面板增强 */
+/* KB Music 主题 / 壁纸 / 趣味按钮 / 音乐库 / 歌单 / 搜索面板增强 */
+body[data-theme="light"]{
+  --bg-top:#f5f7fc;--bg-bottom:#e8edf7;--bg:#f7f9fd;--bg-2:#eef2fa;
+  --surface:#ffffff;--surface-2:#f2f5fb;--surface-3:#e8edf7;--surface-4:#dbe3f1;
+  --card:rgba(26,36,62,.045);--card-hover:rgba(26,36,62,.075);--pill:rgba(26,36,62,.05);
+  --text:#18233d;--muted:#53627f;--faint:#7a88a2;--ghost:#aab4c7;
+  --line:rgba(26,36,62,.10);--line-strong:rgba(26,36,62,.18);--rule:#d8dfec;
+  --accent:#5b4bd6;--accent-press:#493bbd;--accent-soft:rgba(91,75,214,.12);--accent-line:rgba(91,75,214,.35);
+  --glass-chrome:rgba(255,255,255,.82);--glass-sheet:rgba(255,255,255,.94);
+  color:#18233d;
+}
+body[data-wallpaper="aurora"]{background:radial-gradient(900px 560px at 8% -8%,rgba(124,92,255,.32),transparent 62%),radial-gradient(780px 520px at 96% 2%,rgba(34,211,238,.22),transparent 60%),radial-gradient(700px 500px at 60% 105%,rgba(251,113,133,.14),transparent 62%),linear-gradient(180deg,#0d142a,#080d1c)!important;background-attachment:fixed!important}
+body[data-wallpaper="ocean"]{background:radial-gradient(900px 560px at 10% -10%,rgba(14,165,233,.30),transparent 62%),radial-gradient(800px 520px at 95% 10%,rgba(34,211,238,.20),transparent 60%),linear-gradient(180deg,#061a2b,#07121f)!important;background-attachment:fixed!important}
+body[data-wallpaper="sunset"]{background:radial-gradient(900px 560px at 5% -10%,rgba(251,113,133,.28),transparent 62%),radial-gradient(820px 520px at 95% 0%,rgba(245,158,11,.20),transparent 60%),linear-gradient(180deg,#26122b,#120d1d)!important;background-attachment:fixed!important}
+body[data-wallpaper="forest"]{background:radial-gradient(900px 560px at 5% -10%,rgba(16,185,129,.24),transparent 62%),radial-gradient(820px 520px at 95% 5%,rgba(34,211,238,.18),transparent 60%),linear-gradient(180deg,#0a201c,#08131a)!important;background-attachment:fixed!important}
+.kb-theme-tools{display:flex;gap:4px;align-items:center}
+.kb-theme-tools button{width:32px;height:32px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--muted);font-size:14px;cursor:pointer}
+.btn,.icon-btn,.filter-src,.nav-item,.kb-guess-chip,.kb-playlist-item{transition:transform .22s var(--ease),background var(--dur),color var(--dur),border-color var(--dur)}
+.btn:hover,.icon-btn:hover,.kb-guess-chip:hover{transform:translateY(-1px) scale(1.05)}
+.btn:active,.icon-btn:active{transform:scale(.94)}
+.kb-fun-close{margin-left:auto}
+[data-close-modal],#lyricClose,#playerCollapseBtn,.sidebar__close,.kb-branch-close{transition:transform .42s cubic-bezier(.34,1.56,.64,1)!important}
+.kb-fun-near[data-close-modal],.kb-fun-near#lyricClose,.kb-fun-near#playerCollapseBtn,.kb-fun-near.sidebar__close,.kb-fun-near.kb-branch-close{transform:rotate(180deg)}
 .icon-btn.is-liked,#likeBtn.active,.player-bar #likeBtn.active{color:#ff3b5c!important;border-color:rgba(255,59,92,.42)!important;background:rgba(255,59,92,.12)!important}
 .icon-btn.kb-star{color:var(--faint);font-size:17px;line-height:1}
 .icon-btn.kb-star.is-collected{color:#f59e0b!important;text-shadow:0 0 12px rgba(245,158,11,.45)}
@@ -1121,6 +1143,22 @@ body.kb-branch-open .app,body.kb-branch-open .main-wrap{padding-top:38px}
 
 .player-bar{cursor:pointer}
 .player-bar button,.player-bar input,.player-bar a,.player-bar select{cursor:pointer}
+.nav-item .kb-rank-mini{color:var(--accent);margin-right:6px}
+.kb-rank-tabs{display:flex;gap:8px;margin-bottom:14px}
+.kb-rank-tab{padding:7px 14px;border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--muted);font-size:12px;cursor:pointer}
+.kb-rank-tab.is-active{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.kb-rank-genres{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.kb-rank-genre{padding:6px 12px;border:1px solid var(--line);border-radius:99px;background:var(--card);color:var(--muted);font-size:11.5px;cursor:pointer}
+.kb-rank-genre.is-active{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.kb-rank-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);margin-bottom:8px;cursor:pointer}
+.kb-rank-row:hover{border-color:var(--accent-line)}
+.kb-rank-no{width:22px;color:var(--faint);font-size:13px;font-weight:700}
+.kb-rank-row:nth-child(-n+3) .kb-rank-no{color:#ff5f7a}
+.kb-rank-main{flex:1;min-width:0}
+.kb-rank-main b{display:block;font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kb-rank-main small{color:var(--faint);font-size:11px}
+.kb-rank-go{color:var(--accent)}
+.kb-rank-ai{margin-top:10px;padding:12px;border-radius:12px;background:var(--accent-soft);color:var(--text);font-size:12.5px;line-height:1.7}
 .kb-guess-row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 18px}
 .kb-guess-chip{padding:8px 14px;border:1px solid var(--line);border-radius:99px;background:linear-gradient(135deg,rgba(124,92,255,.16),rgba(34,211,238,.08));color:var(--text);font-size:12px;cursor:pointer}
 .kb-guess-chip:hover{border-color:var(--accent-line);color:var(--accent)}
@@ -4454,7 +4492,7 @@ var QRCode;
 
   /* ---------- 下载按钮（产品信息里，点击即下载，不跳转） ---------- */
   var DOWNLOADS = {
-    apk: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-native-v1.0.5.apk',
+    apk: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.7/KB-Music-native-v1.0.7.apk',
     exe: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-1.0.5-x64.exe',
     exePortable: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-1.0.5-portable.exe'
   };
@@ -4473,7 +4511,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 7; // 当前网页版本序号
+  var APP_VERSION = 8; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -5088,7 +5126,8 @@ function checkUpdate() {
     collected: 'kb-music-collected-v1',
     recent: 'kb-music-recent-v1',
     playlists: 'kb-music-playlists-v1',
-    history: 'kb-music-search-history-v1'
+    history: 'kb-music-search-history-v1',
+    plays: 'kb-music-play-count-v1'
   };
   var HOT = [
     ['周杰伦', '225万'], ['晴天', '82万'], ['邓紫棋', '74万'], ['发如雪', '63万'],
@@ -5151,6 +5190,12 @@ function checkUpdate() {
     list = list.filter(function (x) { return keyOf(x) !== k; });
     list.unshift(slim(t));
     LS.set(K.recent, list.slice(0, 500));
+    var plays = LS.get(K.plays, {});
+    var rec = plays[k] || { title: t.title, artist: t.artist, year: t.year || 0, count: 0 };
+    rec.count = Number(rec.count || 0) + 1;
+    rec.year = rec.year || t.year || 0;
+    plays[k] = rec;
+    LS.set(K.plays, plays);
   }
   function refreshStars() {
     $$('.icon-btn.kb-star').forEach(function (b) {
@@ -5500,6 +5545,157 @@ function checkUpdate() {
     });
   }
 
+  /* ---------- 排行榜 + 年度 AI 总结 ---------- */
+  var GENRE_CHARTS = {
+    '华语': ['周杰伦', '林俊杰', '邓紫棋', '陈奕迅', '薛之谦', '五月天'],
+    '流行': ['晴天', '告白气球', '光年之外', '起风了', '孤勇者', '稻香'],
+    '欧美': ['Taylor Swift', 'Eminem', 'Billie Eilish', 'Ed Sheeran', 'Adele', 'The Weeknd'],
+    '轻音乐': ['lo-fi', '钢琴曲', '纯音乐', '治愈系', '睡前音乐', '自然白噪音'],
+    '古风': ['中国风', '古风', '戏腔', '梨花雨', '牵丝戏', '赤伶'],
+    '摇滚': ['Beyond', '摇滚现场', 'Linkin Park', '五月天', '汪峰', '皇后乐队']
+  };
+  var rankState = { tab: 'total', genre: '华语', year: '' };
+
+  function rankRows(items, isPlay) {
+    if (!items.length) return '<div class="kb-history-empty">暂无数据，先听几首歌吧。</div>';
+    return items.slice(0, 20).map(function (x, i) {
+      var title = isPlay ? (x.rec.title || x.key) : x[0];
+      var sub = isPlay ? ((x.rec.artist || '') + ' · ' + x.rec.count + ' 次') : x[1];
+      return '<div class="kb-rank-row" data-rank-q="' + esc(title) + '"><span class="kb-rank-no">' + (i + 1) + '</span>' +
+        '<span class="kb-rank-main"><b>' + esc(title) + '</b><small>' + esc(sub) + '</small></span><span class="kb-rank-go">▶</span></div>';
+    }).join('');
+  }
+  function annualData() {
+    var plays = LS.get(K.plays, {});
+    var map = {};
+    Object.keys(plays).forEach(function (k) {
+      var r = plays[k] || {};
+      if (!r.count) return;
+      var y = r.year || new Date().getFullYear();
+      map[y] = map[y] || [];
+      map[y].push({ key: k, rec: r });
+    });
+    Object.keys(map).forEach(function (y) {
+      map[y].sort(function (a, b) { return Number(b.rec.count) - Number(a.rec.count); });
+    });
+    return map;
+  }
+  function renderRank() {
+    var host = $('#kbRankList');
+    if (!host) return;
+    var data = annualData();
+    var years = Object.keys(data).sort().reverse();
+    if (!rankState.year && years.length) rankState.year = years[0];
+    if (rankState.tab === 'genre') {
+      host.innerHTML = '<div class="kb-rank-genres">' + Object.keys(GENRE_CHARTS).map(function (g) {
+        return '<button class="kb-rank-genre' + (rankState.genre === g ? ' is-active' : '') + '" data-rank-genre="' + esc(g) + '">' + esc(g) + '</button>';
+      }).join('') + '</div>' + rankRows((GENRE_CHARTS[rankState.genre] || []).map(function (q) { return [q, '热门歌曲']; }), false);
+    } else if (rankState.tab === 'year') {
+      host.innerHTML = '<div class="kb-rank-genres">' + (years.length ? years.map(function (y) {
+        return '<button class="kb-rank-genre' + (rankState.year === y ? ' is-active' : '') + '" data-rank-year="' + y + '">' + y + ' 年</button>';
+      }).join('') : '<span class="kb-history-empty">还没有年度数据</span>') + '</div>' +
+        rankRows(data[rankState.year] || [], true) +
+        '<button class="btn btn--primary btn--sm" id="kbRankSummary" style="margin-top:14px">AI 总结我的听歌</button><div id="kbRankAiSummary" class="kb-rank-ai"></div>';
+    } else {
+      host.innerHTML = rankRows(HOT, false);
+    }
+  }
+  function glmAsk(prompt) {
+    return fetch('https://kaobei-music.pages.dev/api/glm', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: prompt })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      var c = d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content;
+      return c || d.error || '暂时无法生成总结';
+    }).catch(function () { return 'AI 服务暂时不可用'; });
+  }
+  function addRankView() {
+    if ($('#rankView')) return;
+    var nav = $('.nav');
+    if (nav) {
+      var btn = document.createElement('button');
+      btn.className = 'nav-item';
+      btn.setAttribute('data-lib-view', 'rankView');
+      btn.innerHTML = '<span class="kb-rank-mini">↗</span><span>排行榜</span>';
+      var anchor = $('.nav-item[data-lib-view="playlistView"]') || $('.nav-item[data-view="favorites"]');
+      if (anchor && anchor.nextSibling) nav.insertBefore(btn, anchor.nextSibling);
+      else nav.appendChild(btn);
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation(); rankState.tab = 'total'; renderRank(); showView('rankView', '排行榜');
+      });
+    }
+    var main = $('#main');
+    if (!main) return;
+    var v = document.createElement('section');
+    v.className = 'view'; v.id = 'rankView'; v.hidden = true;
+    v.innerHTML = '<div class="view-head"><div><h2>排行榜</h2><p class="view-head__meta">总榜 · 风格榜 · 年度听歌榜</p></div></div>' +
+      '<div class="kb-rank-tabs"><button class="kb-rank-tab is-active" data-rank-tab="total">总榜</button>' +
+      '<button class="kb-rank-tab" data-rank-tab="genre">风格榜</button>' +
+      '<button class="kb-rank-tab" data-rank-tab="year">年度榜</button></div>' +
+      '<div id="kbRankList"></div>';
+    main.appendChild(v);
+    v.addEventListener('click', function (e) {
+      var tab = e.target.closest('[data-rank-tab]');
+      if (tab) {
+        rankState.tab = tab.getAttribute('data-rank-tab');
+        $$('.kb-rank-tab', v).forEach(function (x) { x.classList.toggle('is-active', x === tab); });
+        renderRank(); return;
+      }
+      var g = e.target.closest('[data-rank-genre]');
+      if (g) { rankState.genre = g.getAttribute('data-rank-genre'); renderRank(); return; }
+      var y = e.target.closest('[data-rank-year]');
+      if (y) { rankState.year = y.getAttribute('data-rank-year'); renderRank(); return; }
+      var row = e.target.closest('[data-rank-q]');
+      if (row) { runSearch(row.getAttribute('data-rank-q')); return; }
+      if (e.target.id === 'kbRankSummary') {
+        var data = annualData();
+        var top = (data[rankState.year] || []).slice(0, 8).map(function (x, i) {
+          return (i + 1) + '.' + x.rec.title + '(' + x.rec.count + '次)';
+        }).join(' ');
+        var box = $('#kbRankAiSummary');
+        if (box) box.textContent = '正在生成…';
+        glmAsk(rankState.year + ' 年我的听歌排行榜：' + top + '。请用不超过50字总结我的听歌偏好。').then(function (text) {
+          if (box) box.textContent = text;
+        });
+      }
+    });
+  }
+
+  /* ---------- 主题 / 壁纸 / 趣味按钮 ---------- */
+  function buildThemeTools() {
+    var saved = LS.get('kb-theme-v1', { theme: 'dark', wallpaper: 'aurora' });
+    document.body.dataset.theme = saved.theme || 'dark';
+    document.body.dataset.wallpaper = saved.wallpaper || 'aurora';
+    var actions = $('.topbar__actions');
+    if (!actions || $('#kbThemeToggle')) return;
+    var box = document.createElement('div');
+    box.className = 'kb-theme-tools';
+    box.innerHTML = '<button type="button" id="kbThemeToggle" title="切换深色/浅色模式">◐</button>' +
+      '<button type="button" id="kbWallpaperToggle" title="切换壁纸">▦</button>';
+    actions.insertBefore(box, actions.firstChild);
+    var wallpapers = ['aurora', 'ocean', 'sunset', 'forest'];
+    $('#kbThemeToggle').addEventListener('click', function () {
+      var next = document.body.dataset.theme === 'light' ? 'dark' : 'light';
+      document.body.dataset.theme = next;
+      LS.set('kb-theme-v1', { theme: next, wallpaper: document.body.dataset.wallpaper });
+      toast(next === 'light' ? '已切换到浅色模式' : '已切换到深色模式');
+    });
+    $('#kbWallpaperToggle').addEventListener('click', function () {
+      var cur = document.body.dataset.wallpaper || 'aurora';
+      var next = wallpapers[(wallpapers.indexOf(cur) + 1) % wallpapers.length];
+      document.body.dataset.wallpaper = next;
+      LS.set('kb-theme-v1', { theme: document.body.dataset.theme, wallpaper: next });
+      toast('壁纸：' + ({ aurora: '极光', ocean: '海洋', sunset: '落日', forest: '森林' })[next]);
+    });
+  }
+  function hookFunButtons() {
+    var sel = '[data-close-modal],#lyricClose,#playerCollapseBtn,.sidebar__close,.kb-branch-close';
+    $$(sel).forEach(function (b) {
+      b.addEventListener('mouseenter', function () { b.classList.add('kb-fun-near'); });
+      b.addEventListener('mouseleave', function () { b.classList.remove('kb-fun-near'); });
+    });
+  }
+
   /* ---------- 点击播放区任意位置打开歌词 ---------- */
   function hookLyricsAnywhere() {
     document.addEventListener('click', function (e) {
@@ -5706,7 +5902,7 @@ function checkUpdate() {
     }, 1800);
   }
   function boot() {
-    addViews(); addNav(); addPlayerStar(); buildSearchPanel(); buildGuessYouLike(); bindLibActions(); hookLyricsAnywhere(); branchPrompt(); hookRecent(); renderNavCounts();
+    buildThemeTools(); addViews(); addNav(); addRankView(); addPlayerStar(); buildSearchPanel(); buildGuessYouLike(); bindLibActions(); hookLyricsAnywhere(); hookFunButtons(); branchPrompt(); hookRecent(); renderNavCounts();
     var pm = location.pathname.match(/\/p\/([A-Za-z0-9_-]+)\/?$/);
     if (!pm) {
       var qs = new URLSearchParams(location.search).get('share');
