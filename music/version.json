@@ -1,22 +1,22 @@
 {
-  "version": 6,
-  "webVersion": 6,
-  "versionName": "1.0.4",
+  "version": 7,
+  "webVersion": 7,
+  "versionName": "1.0.5",
   "releasedAt": "2026-11-27",
   "forceThreshold": 3,
   "changelog": [
-    "新增我的音乐库：我喜欢（红心）、我的收藏（橙星）、最近播放（500 首）、个人歌单与分享快照",
-    "搜索框新格式：桌面热门搜索/搜索历史双栏，手机快捷入口与推荐 Tab",
-    "支持在搜索框直接粘贴 kaobei-music.pages.dev / kbmusic.pages.dev 的歌单与歌曲链接",
-    "k-dji.github.io/music 与 k-dji.github.io/kbmusic 开放为可听歌镜像，分站提示前往主站",
-    "APK v1.0.4：歌词解析与滚动定位修复，Release 直链下载"
+    "新增音乐库：喜欢/收藏/最近播放500/个人歌单与分享快照",
+    "新增猜你喜欢、歌曲年份、强平台时长免费判定，默认优先酷狗完整源",
+    "搜索来源筛选修复：选酷狗后结果与默认播放同步为酷狗",
+    "有声书分集直接播放，品牌筛选样式统一，封面异常回退唱片图",
+    "点击播放区任意位置打开全屏歌词；APK 更换新图标"
   ],
   "downloads": {
-    "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-native-v1.0.4.apk",
-    "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-1.0.4-x64.exe",
-    "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-1.0.4-portable.exe"
+    "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-native-v1.0.5.apk",
+    "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-1.0.5-x64.exe",
+    "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-1.0.5-portable.exe"
   },
-  "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-native-v1.0.4.apk",
-  "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-1.0.4-x64.exe",
+  "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-native-v1.0.5.apk",
+  "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-1.0.5-x64.exe",
   "webUrl": "https://kaobei-music.pages.dev/"
 }
