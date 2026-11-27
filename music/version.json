@@ -1,7 +1,7 @@
 {
-  "version": 7,
-  "webVersion": 7,
-  "versionName": "1.0.5",
+  "version": 8,
+  "webVersion": 8,
+  "versionName": "1.0.7",
   "releasedAt": "2026-11-27",
   "forceThreshold": 3,
   "changelog": [
@@ -12,11 +12,11 @@
     "点击播放区任意位置打开全屏歌词；APK 更换新图标"
   ],
   "downloads": {
-    "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-native-v1.0.5.apk",
+    "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.7/KB-Music-native-v1.0.7.apk",
     "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-1.0.5-x64.exe",
     "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-1.0.5-portable.exe"
   },
-  "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-native-v1.0.5.apk",
+  "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.7/KB-Music-native-v1.0.7.apk",
   "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-1.0.5-x64.exe",
   "webUrl": "https://kaobei-music.pages.dev/"
 }
