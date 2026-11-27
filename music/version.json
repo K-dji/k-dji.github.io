@@ -1,15 +1,15 @@
 {
-  "version": 4,
-  "webVersion": 4,
-  "versionName": "1.0.3",
+  "version": 5,
+  "webVersion": 5,
+  "versionName": "1.0.4",
   "releasedAt": "2026-11-27",
   "forceThreshold": 3,
   "changelog": [
-    "安卓原生 APK v1.0.2：歌词解析与滚动定位修复，Release 直链下载",
-    "修复歌词定位错位与手机滚动卡顿，桌面端全屏唱片歌词页 + 底部播放横幅",
-    "有声书栏目：喜马拉雅整本书/分集/播放进度，Apple Books 图书检索，番茄/蜻蜓/懒人品牌直达",
-    "APK 下载按钮改为直接下载 Release 安装包，移除旧 TTS 听书模式",
-    "网页更新检测改为网页版本检测，一键刷新加载最新内容"
+    "新增我的音乐库：我喜欢（红心）、我的收藏（橙星）、最近播放（500 首）、个人歌单与分享快照",
+    "搜索框新格式：桌面热门搜索/搜索历史双栏，手机快捷入口与推荐 Tab",
+    "支持在搜索框直接粘贴 kaobei-music.pages.dev / kbmusic.pages.dev 的歌单与歌曲链接",
+    "k-dji.github.io/music 与 k-dji.github.io/kbmusic 开放为可听歌镜像，分站提示前往主站",
+    "APK v1.0.2：歌词解析与滚动定位修复，Release 直链下载"
   ],
   "downloads": {
     "apk": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.2/KB-Music-native-v1.0.2.apk",
