@@ -4403,9 +4403,9 @@ var QRCode;
 
   /* ---------- 下载按钮（产品信息里，点击即下载，不跳转） ---------- */
   var DOWNLOADS = {
-    apk: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.2/KB-Music-native-v1.0.2.apk',
-    exe: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.0/KB-Music-1.0.0-installer.exe',
-    exePortable: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.0/KB-Music-1.0.0-portable.exe'
+    apk: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-native-v1.0.4.apk',
+    exe: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-1.0.4-x64.exe',
+    exePortable: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-1.0.4-portable.exe'
   };
   function initDownloadButtons() {
     var card = $('.about-card');
@@ -4422,7 +4422,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 5; // 当前网页版本序号
+  var APP_VERSION = 6; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
