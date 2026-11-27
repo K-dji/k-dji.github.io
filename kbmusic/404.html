@@ -122,9 +122,10 @@ a{color:inherit;text-decoration:none}
 body.pointer-modality :focus,body.pointer-modality :focus-visible{outline:none}
 ::selection{background:var(--accent-soft)}
 .tabular{font-variant-numeric:tabular-nums}
-::-webkit-scrollbar{width:10px;height:10px}
-::-webkit-scrollbar-thumb{background:var(--surface-3);border:3px solid var(--bg);border-radius:99px}
-::-webkit-scrollbar-track{background:transparent}
+*{scrollbar-width:none}
+::-webkit-scrollbar{width:0;height:0;display:none}
+::-webkit-scrollbar-thumb{display:none}
+::-webkit-scrollbar-track{display:none}
 
 /* ---------- 布局骨架 ---------- */
 .app{display:block;min-height:100dvh}
@@ -1019,8 +1020,11 @@ button:focus,a:focus,.icon-btn:focus{-webkit-tap-highlight-color:transparent!imp
 .ab-searchbar input{flex:1;min-width:220px;height:42px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-input);background:var(--card);color:var(--text);font-size:13px;outline:none}
 .ab-searchbar input:focus{border-color:var(--accent-line)}
 .ab-brands{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.ab-brand{padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--muted);font-size:11.5px;cursor:pointer;text-decoration:none}
-.ab-brand.is-active{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.ab-brand{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-pill);background:var(--card);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;text-decoration:none}
+.ab-brand::before{content:'';width:6px;height:6px;border-radius:50%;flex:none;background:#22d3ee}
+.ab-brand[data-brand="all"]::before{background:#7c5cff}
+.ab-brand[data-brand="apple"]::before{background:#f472b6}
+.ab-brand.is-active{color:var(--on-accent-container);border-color:var(--accent-line);background:var(--accent-container)}
 .ab-status{padding:12px 4px;color:var(--muted);font-size:12.5px;line-height:1.7}
 .ab-books{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:8px}
 .ab-book-card{display:flex;gap:12px;padding:14px;border:1px solid var(--line);border-radius:var(--r-card);background:linear-gradient(135deg,rgba(124,92,255,.1),rgba(34,211,238,.04));cursor:pointer;transition:transform .18s,border-color .18s}
@@ -1072,6 +1076,8 @@ button:focus,a:focus,.icon-btn:focus{-webkit-tap-highlight-color:transparent!imp
 .kb-playlist-item:hover{background:var(--surface-2);color:var(--text)}
 .kb-playlist-item.is-active{color:var(--accent);background:var(--accent-soft)}
 .kb-playlist-item span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kb-playlist-new{display:block;width:100%;padding:7px 10px 7px 34px;border:0;background:transparent;color:var(--accent);font-size:11.5px;text-align:left;cursor:pointer;border-radius:10px}
+.kb-playlist-new:hover{background:var(--accent-soft)}
 
 .kb-branch-banner{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;gap:10px;padding:9px 16px;background:linear-gradient(90deg,rgba(124,92,255,.94),rgba(34,211,238,.92));color:#fff;font-size:12.5px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .kb-branch-banner .kb-branch-main{flex:1}
@@ -1113,6 +1119,11 @@ body.kb-branch-open .app,body.kb-branch-open .main-wrap{padding-top:38px}
 .kb-reco-card i{width:48px;height:48px;font-size:20px}
 .kb-mobile-search-extra{display:none}
 
+.player-bar{cursor:pointer}
+.player-bar button,.player-bar input,.player-bar a,.player-bar select{cursor:pointer}
+.kb-guess-row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 18px}
+.kb-guess-chip{padding:8px 14px;border:1px solid var(--line);border-radius:99px;background:linear-gradient(135deg,rgba(124,92,255,.16),rgba(34,211,238,.08));color:var(--text);font-size:12px;cursor:pointer}
+.kb-guess-chip:hover{border-color:var(--accent-line);color:var(--accent)}
 .kb-lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
 .kb-lib-card{padding:14px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,rgba(124,92,255,.12),rgba(34,211,238,.04));cursor:pointer}
 .kb-lib-card:hover{border-color:var(--accent-line)}
@@ -1167,7 +1178,7 @@ body.kb-branch-open .app,body.kb-branch-open .main-wrap{padding-top:38px}
       <div class='health' id='miniStatus'></div>
     </div>
 
-    <p class='side-note'>聚合公开音乐接口，仅用于个人学习与试听。<br>版权归各平台及权利方所有。<br>自托管方案：<a href='https://github.com/metowolf/Meting' target='_blank' rel='noopener'>Meting API</a></p>
+    <p class='side-note'>本项目由个人开发者「靠北科技」运营（非商业团队）<br>2026-靠北 Chat · 聚合公开音乐接口，仅用于个人学习与试听。<br>版权归各平台及权利方所有。</p>
   </aside>
 
   <div class='main-wrap'>
@@ -1210,7 +1221,7 @@ body.kb-branch-open .app,body.kb-branch-open .main-wrap{padding-top:38px}
         </div>
 
         <div class='source-strip' id='sourceStrip'></div>
-        <p class='footnote'>聚合公开音乐接口，仅用于个人学习与试听；版权归各平台及权利方所有。搜索结果只是临时视图，不会写进播放队列。</p>
+        <p class='footnote'>本项目由个人开发者「靠北科技」运营（非商业团队） · 2026-靠北 Chat。聚合公开音乐接口，仅用于个人学习与试听；版权归各平台及权利方所有。搜索结果只是临时视图，不会写进播放队列。</p>
       </section>
 
       <!-- ===================== 搜索结果 ===================== -->
@@ -1281,17 +1292,7 @@ body.kb-branch-open .app,body.kb-branch-open .main-wrap{padding-top:38px}
           </div>
         </div>
         <div class='source-grid' id='sourceGrid'></div>
-        <details class='help-card'>
-          <summary>接口经常超时 / 全部无法播放？先看这里</summary>
-          <div class='help-body'>
-            <p><b>正确地址格式</b>：Meting 兼容接口必须带 <code>/meting/</code> 或 <code>/music</code> 路径，且用 <code>https</code>。内置推荐 <code>https://api.kfjie.me/music</code>（备用 <code>https://api.qijieya.cn/meting/</code>）。填错如 <code>http://api.qijieya.cn/music</code> 会 404 或被浏览器拦截，页面会自动纠正为 https。</p>
-            <p><b>咪咕音乐</b>：几乎所有公共 Meting 接口对 <code>server=migu</code> 都会降级回网易云，无法真正拿到咪咕源。要用真咪咕需自建 <a href='https://github.com/metowolf/Meting' target='_blank' rel='noopener'>Meting 服务端</a> 并配置咪咕 Cookie，再把地址填到上方。普通用户建议保持关闭。</p>
-            <p><b>Jamendo</b>：免费注册 <a href='https://dev.jamendo.com/' target='_blank' rel='noopener'>Jamendo Developers</a> → 创建应用 → 复制 <code>Client ID</code> 填到上方输入框即可。它是 CC 授权音乐，可完整播放，适合做「确定免费」的补充曲库。</p>
-            <p><b>Deezer</b>：官方接口在国内经常超时，默认关闭。需要时再开启，能搜到就用 30 秒预览。</p>
-            <p class='help-warn'>提示：任何「在线音源」能否完整播放都取决于版权方，接口无法保证完整版。播放器会在检测到只有几十秒的试听片段时自动换源并提示。</p>
-          </div>
-        </details>
-        <p class='disclaimer'>公共接口可能因限流或策略调整而失效。遇到某个音源持续失败，可在上方替换为自托管的 Meting 兼容 API 地址；点「恢复默认」可还原为内置推荐地址。</p>
+        <p class='disclaimer'>本项目由个人开发者「靠北科技」运营（非商业团队） · 2026-靠北 Chat</p>
       </section>
     </main>
   </div>
@@ -1839,6 +1840,11 @@ var QRCode;
     return n > 10000 ? Math.round(n / 1000) : Math.round(n);
   }
 
+  function toYear(value) {
+    const m = String(value || '').match(/(19|20)\d{2}/);
+    return m ? Number(m[0]) : 0;
+  }
+
   function formatTime(seconds) {
     if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
     const s = Math.floor(seconds);
@@ -1884,8 +1890,9 @@ var QRCode;
       title: title,
       artist: artist,
       album: String(base.album || '').trim(),
-      cover: safeImgUrl(base.cover) || placeholderCover(title),
+      cover: safeImgUrl(base.cover) || COVER_FALLBACK,
       duration: toSeconds(base.duration),
+      year: toYear(base.year || base.releaseDate || base.releasedate || base.publishTime || ''),
       sources: [source].filter(Boolean)
     };
   }
@@ -2009,28 +2016,62 @@ var QRCode;
     paid: { label: '付费', cls: 'paid' }
   };
 
+  const COVER_FALLBACK = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'>" +
+    "<defs><radialGradient id='g' cx='35%' cy='30%'><stop stop-color='#5b4b9e'/><stop offset='1' stop-color='#1b2140'/></radialGradient></defs>" +
+    "<rect width='120' height='120' rx='12' fill='url(#g)'/>" +
+    "<circle cx='60' cy='60' r='38' fill='#10131f' stroke='#8b7bff' stroke-width='2'/>" +
+    "<circle cx='60' cy='60' r='22' fill='none' stroke='#3d3a63' stroke-width='1'/>" +
+    "<circle cx='60' cy='60' r='7' fill='#c8bcff'/>" +
+    "<text x='60' y='108' text-anchor='middle' font-size='14' fill='#d8d2ff' font-family='Arial'>KB MUSIC</text></svg>"
+  );
+
+  window.KB_COVER_FALLBACK = COVER_FALLBACK;
+
   // 音源真实/声明时长（秒）。播放后以实测时长为准，未播放时用接口声明值。
   function sourceDuration(s) {
     return numOr(s && s.actualDuration, numOr(s && s.declaredDuration, 0));
   }
 
-  // 用时长辅助识别免费/试听：能播放较长时长即视为免费完整音源，
-  // 短片段（<45 秒）按试听处理——很多免费平台的 fee 标记并不可靠。
+  // 按平台 + 时长做强判定：
+  // 网易云 <=46s / QQ <52s 判为试听；咪咕、酷狗按接口时长直接判为免费；
+  // iTunes / Deezer 等明确只有预览的来源仍判为试听。
   function sourceAccess(s) {
     if (!s) return 'preview';
     if (s.full === false) return 'preview';
     const d = sourceDuration(s);
+    const id = String(s.sourceId || '').toLowerCase();
+    if (id.indexOf('netease') >= 0 || id === '163' || id === 'wy') {
+      return d > 0 && d <= 46 ? 'preview' : 'free';
+    }
+    if (id.indexOf('qq') >= 0) {
+      return d > 0 && d < 52 ? 'preview' : 'free';
+    }
+    if (id.indexOf('migu') >= 0 || id.indexOf('kugou') >= 0 || id === 'kg') {
+      return 'free';
+    }
     if (d > 0 && d < 45) return 'preview';
-    if (d >= 45) return 'free'; // 时长足够长，按免费识别，覆盖不准的付费标记
+    if (d >= 45) return 'free';
     if (s.paid) return 'paid';
     return s.full ? 'free' : 'preview';
   }
 
   const ACCESS_RANK = { free: 0, preview: 1, paid: 2 };
+  let preferredSourceId = 'all';
+  function platformRank(s) {
+    const id = String((s && s.sourceId) || '').toLowerCase();
+    if (id === preferredSourceId) return -2;
+    if (id.indexOf('kugou') >= 0 || id === 'kg') return -1;
+    if (id.indexOf('migu') >= 0) return 0;
+    if (id.indexOf('netease') >= 0 || id === '163' || id === 'wy') return 1;
+    if (id.indexOf('qq') >= 0) return 2;
+    return 3;
+  }
   function sortSources(sources) {
     return sources.slice().sort(function (a, b) {
       return (ACCESS_RANK[sourceAccess(a)] - ACCESS_RANK[sourceAccess(b)]) ||
-        (sourceDuration(b) - sourceDuration(a)) || // 同等级里时长久的排前面，默认播放
+        (platformRank(a) - platformRank(b)) ||
+        (sourceDuration(b) - sourceDuration(a)) ||
         (b.priority - a.priority);
     });
   }
@@ -2065,14 +2106,14 @@ var QRCode;
           lrcUrl: safeUrl(raw.lrc || raw.lyric),
           externalUrl: platformUrl(src, id)
         };
-        return makeTrack({ title: title, artist: artist, album: raw.album, cover: source.coverUrl, duration: declared }, src, source);
+        return makeTrack({ title: title, artist: artist, album: raw.album, cover: source.coverUrl, duration: declared, year: raw.year || raw.publishTime || '' }, src, source);
       }
       if (src.type === 'itunes') {
         const playUrl = safeAudioUrl(raw.previewUrl);
         const cover = String(raw.artworkUrl100 || '').replace('100x100bb', '600x600bb');
         return makeTrack({
           title: raw.trackName, artist: raw.artistName, album: raw.collectionName,
-          cover: cover, duration: Math.round((raw.trackTimeMillis || 0) / 1000)
+          cover: cover, duration: Math.round((raw.trackTimeMillis || 0) / 1000), year: raw.releaseDate
         }, src, {
           sourceId: src.id, platform: src.name, short: src.short, color: src.color,
           priority: src.priority, full: false, tag: src.tag, paid: false, quality: qualityOf(raw, src),
@@ -2084,7 +2125,7 @@ var QRCode;
         const title = raw.title_short || raw.title || '未知歌曲';
         return makeTrack({
           title: title, artist: raw.artist && raw.artist.name, album: raw.album && raw.album.title,
-          cover: cover, duration: raw.duration
+          cover: cover, duration: raw.duration, year: raw.album && raw.album.release_date
         }, src, {
           sourceId: src.id, platform: src.name, short: src.short, color: src.color,
           priority: src.priority, full: false, tag: src.tag, paid: false, quality: qualityOf(raw, src),
@@ -2095,7 +2136,7 @@ var QRCode;
         const cover = raw.image || raw.album_image || '';
         return makeTrack({
           title: raw.name, artist: raw.artist_name, album: raw.album_name,
-          cover: cover, duration: raw.duration
+          cover: cover, duration: raw.duration, year: raw.releasedate || raw.creationdate
         }, src, {
           sourceId: src.id, platform: src.name, short: src.short, color: src.color,
           priority: src.priority, full: true, tag: src.tag, paid: false,
@@ -2143,6 +2184,7 @@ var QRCode;
       });
       if (isPlaceholderCover(existing.cover) && !isPlaceholderCover(track.cover)) existing.cover = track.cover;
       existing.duration = existing.duration || track.duration;
+      existing.year = existing.year || track.year || 0;
       existing.sources = sortSources(existing.sources);
       if (existing.sources.length > MAX_SOURCES) existing.sources.length = MAX_SOURCES;
     });
@@ -2742,7 +2784,7 @@ var QRCode;
     if (!track) { toast('请先选择一首歌曲', 'error'); return; }
     detailTrack = track;
     $('#detailBody').innerHTML =
-      '<div class=\'detail-hero\'><img src=\'' + esc(track.cover) + '\' alt=\'\'><div><h4>' + esc(track.title) + '</h4><p>' + esc(track.artist) + (track.album ? ' · ' + esc(track.album) : '') + '</p></div></div>' +
+      '<div class=\'detail-hero\'><img src=\'' + esc(track.cover) + '\' alt=\'\'><div><h4>' + esc(track.title) + '</h4><p>' + esc(track.artist) + (track.year ? ' · ' + track.year : '') + (track.album ? ' · ' + esc(track.album) : '') + '</p></div></div>' +
       '<div class=\'detail-source-list\'>' + track.sources.map(function (s, i) {
         return '<div class=\'detail-source\'><div><strong><span style=\'color:' + s.color + '\'>●</span> ' + esc(s.platform) + ' ' + accessBadgeHtml(sourceAccess(s)) + '</strong><small>' + esc(s.tag) + (s.full ? ' · 在线音源（完整性以实际为准）' : ' · 预览/片段') + '</small></div>' +
           '<div class=\'links\'><button data-detail-action=\'switch\' data-source-index=\'' + i + '\'>播放此源</button>' +
@@ -3412,10 +3454,10 @@ var QRCode;
     const playIcon = playing && !audio.paused ? icon('pause') : icon('play');
     return "<div class='track-row" + (playing ? ' is-playing' : '') + "' data-index='" + index + "'>" +
       "<button class='cover-btn' data-action='play' title='播放' aria-label='播放 " + esc(track.title) + "'>" +
-        "<img class='cover' src='" + esc(track.cover) + "' alt='' loading='lazy' onerror='this.style.opacity=0'>" +
+        "<img class='cover' src='" + esc(track.cover) + "' alt='' loading='lazy' onerror='this.onerror=null;this.src=window.KB_COVER_FALLBACK||this.src'>" +
         "<span class='cover-play'><span>" + playIcon + "</span></span>" +
       "</button>" +
-      "<div class='track-main'><div class='track-title'>" + esc(track.title) + "</div><div class='track-sub'>" + esc(track.artist) + (track.album ? ' · ' + esc(track.album) : '') + "</div></div>" +
+      "<div class='track-main'><div class='track-title'>" + esc(track.title) + "</div><div class='track-sub'>" + esc(track.artist) + (track.year ? ' · ' + track.year : '') + (track.album ? ' · ' + esc(track.album) : '') + "</div></div>" +
       "<div class='badges'>" + accessBadgeHtml(access) + (bestQuality(track) ? qualityBadgeHtml(bestQuality(track)) : '') + srcBadges + "</div>" +
       "<span class='duration'>" + (track.duration ? formatTime(track.duration) : '--:--') + "</span>" +
       "<div class='row-actions'>" + favBtn + starBtn + enqueueBtn + removeBtn + shareBtn + "</div>" +
@@ -3451,8 +3493,8 @@ var QRCode;
     if (!track) { toast('请先选择一首歌曲', 'error'); return; }
     detailTrack = track;
     $('#detailBody').innerHTML =
-      "<div class='detail-hero'><div class='cover-btn'><img class='cover' src='" + esc(track.cover) + "' alt='' onerror='this.style.opacity=0'><span class='cover-play'></span></div>" +
-        "<div><h4>" + esc(track.title) + "</h4><p>" + esc(track.artist) + (track.album ? ' · ' + esc(track.album) : '') + "</p></div></div>" +
+      "<div class='detail-hero'><div class='cover-btn'><img class='cover' src='" + esc(track.cover) + "' alt='' onerror='this.onerror=null;this.src=window.KB_COVER_FALLBACK||this.src'><span class='cover-play'></span></div>" +
+        "<div><h4>" + esc(track.title) + "</h4><p>" + esc(track.artist) + (track.year ? ' · ' + track.year : '') + (track.album ? ' · ' + esc(track.album) : '') + "</p></div></div>" +
       "<div class='detail-source-list'>" + (track.sources || []).map(function (s, i) {
         return "<div class='detail-source'><span class='src-dot' style='background:" + s.color + "'></span>" +
           "<div class='detail-source__meta'><strong>" + esc(s.platform) + " " + accessBadgeHtml(sourceAccess(s)) + "</strong>" +
@@ -3543,6 +3585,13 @@ var QRCode;
       }
       if (kbArtistMode && kbFilters.artist !== 'all' && String(t.artist || '').trim() !== kbFilters.artist) return false;
       return true;
+    }).map(function (t) {
+      if (kbFilters.source === 'all') return t;
+      // 选中酷狗后把酷狗源排到最前，标签与默认播放都跟随筛选结果
+      var sources = (t.sources || []).slice().sort(function (a, b) {
+        return (String(a.sourceId) === kbFilters.source ? -1 : 0) - (String(b.sourceId) === kbFilters.source ? -1 : 0);
+      });
+      return Object.assign({}, t, { sources: sources });
     });
     if (kbFilters.sort === 'time') {
       list = list.slice().sort(function (a, b) { return (a.duration || 0) - (b.duration || 0); });
@@ -3763,6 +3812,7 @@ var QRCode;
     var srcChip = el.closest('[data-source-filter]');
     if (srcChip) {
       kbFilters.source = srcChip.dataset.sourceFilter || 'all';
+      preferredSourceId = kbFilters.source;
       renderResults(); updateSearchMeta();
       return;
     }
@@ -3775,6 +3825,7 @@ var QRCode;
     if (el.closest('#kbClearFilters')) {
       kbFilters.access = 'all'; kbFilters.source = 'all'; kbFilters.sort = 'default';
       kbFilters.artist = 'all'; kbArtistMode = false; freeOnly = false;
+      preferredSourceId = 'all';
       var freeBtn2 = $('#freeOnlyBtn');
       if (freeBtn2) freeBtn2.classList.remove('active');
       renderResults(); updateSearchMeta();
@@ -4403,9 +4454,9 @@ var QRCode;
 
   /* ---------- 下载按钮（产品信息里，点击即下载，不跳转） ---------- */
   var DOWNLOADS = {
-    apk: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-native-v1.0.4.apk',
-    exe: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-1.0.4-x64.exe',
-    exePortable: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.4/KB-Music-1.0.4-portable.exe'
+    apk: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-native-v1.0.5.apk',
+    exe: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-1.0.5-x64.exe',
+    exePortable: 'https://github.com/K-dji/kb-music-native/releases/download/v1.0.5/KB-Music-1.0.5-portable.exe'
   };
   function initDownloadButtons() {
     var card = $('.about-card');
@@ -4422,7 +4473,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 6; // 当前网页版本序号
+  var APP_VERSION = 7; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -4798,6 +4849,19 @@ function checkUpdate() {
     });
   }
   function resolveXimalayaUrl(book, ep) {
+    // 优先使用喜马拉雅分集直链接口，避免回退到打开品牌页
+    if (ep && ep.id) {
+      var direct = 'https://www.ximalaya.com/revision/play/v1/audio?id=' + encodeURIComponent(ep.id) + '&ptype=1';
+      return fetchJson(direct).then(function (data) {
+        return safeHttp(((data || {}).data || {}).src || '');
+      }).catch(function () { return ''; }).then(function (src) {
+        if (src) return src;
+        return searchFallback();
+      });
+    }
+    return searchFallback();
+
+    function searchFallback() {
     var kw = book.title + ' ' + ep.title;
     var url = 'https://www.ximalaya.com/revision/search?core=track&kw=' + encodeURIComponent(kw) + '&page=1&rows=12&device=web';
     return fetchJson(url).then(function (data) {
@@ -4812,6 +4876,7 @@ function checkUpdate() {
       var any = docs.find(function (d) { return pickUrl(d) && String(d.title || '').indexOf(String(ep.title || '').slice(0, 6)) >= 0; });
       return any ? pickUrl(any) : '';
     }).catch(function () { return ''; });
+    }
   }
 
   /* ---------- 界面 ---------- */
@@ -4843,9 +4908,6 @@ function checkUpdate() {
         '<button class="ab-brand is-active" data-brand="all">全部</button>' +
         '<button class="ab-brand" data-brand="ximalaya">喜马拉雅</button>' +
         '<button class="ab-brand" data-brand="apple">Apple Books</button>' +
-        '<a class="ab-brand ab-link" href="https://fanqienovel.com/" target="_blank" rel="noopener">番茄小说 ↗</a>' +
-        '<a class="ab-brand ab-link" href="https://www.qtfm.cn/" target="_blank" rel="noopener">蜻蜓FM ↗</a>' +
-        '<a class="ab-brand ab-link" href="https://www.lrts.me/" target="_blank" rel="noopener">懒人听书 ↗</a>' +
       '</div>' +
       '<div id="abStatus" class="ab-status">输入书名，或直接在顶部搜索框搜索图书。</div>' +
       '<div id="abBooks" class="ab-books"></div>' +
@@ -4889,12 +4951,6 @@ function checkUpdate() {
       }
       var back = e.target.closest('#abBack');
       if (back) { $('#abEpisodes').hidden = true; $('#abBooks').hidden = false; }
-      var next = e.target.closest('#abNext');
-      if (next && state.episodes.length) {
-        var idx = state.episodes.findIndex(function (x) { return state.playing && x.id === state.playing.ep.id; });
-        var nxt = state.episodes[idx + 1];
-        if (nxt) playEpisode(state.currentBook, nxt);
-      }
     });
     $('#abSearch').addEventListener('click', function () {
       var q = $('#abQuery').value.trim();
@@ -4916,7 +4972,7 @@ function checkUpdate() {
       var i = state.books.indexOf(b);
       var pct = b.episodes ? '' : '<span class="ab-pill">品牌直达</span>';
       return '<article class="ab-book-card" data-book-index="' + i + '">' +
-        '<div class="ab-cover">' + (b.cover ? '<img src="' + esc(b.cover) + '" referrerpolicy="no-referrer" alt="">' : '<span>📖</span>') + '</div>' +
+        '<div class="ab-cover"><img src="' + esc(b.cover || (window.KB_COVER_FALLBACK || '')) + '" referrerpolicy="no-referrer" alt="" onerror="this.onerror=null;this.src=window.KB_COVER_FALLBACK||this.src"></div>' +
         '<div class="ab-book-meta"><span class="ab-brand-tag">' + esc(b.brand) + '</span>' +
         '<strong>' + esc(b.title) + '</strong><small>' + esc(b.author) + (b.episodes ? ' · ' + b.episodes + ' 集' : '') + '</small>' +
         '<p>' + esc((b.desc || '').slice(0, 80)) + '</p>' +
@@ -4943,8 +4999,7 @@ function checkUpdate() {
     host.hidden = false;
     host.innerHTML =
       '<div class="ab-ep-head"><button class="btn btn--ghost btn--sm" id="abBack">← 返回书籍</button>' +
-      '<div><strong>' + esc(book.title) + '</strong><small>' + esc(book.author) + ' · 共 ' + state.episodes.length + ' 集（可继续翻页加载更多）</small></div>' +
-      '<button class="btn btn--ghost btn--sm" id="abNext">下一集 ▶</button></div>' +
+      '<div><strong>' + esc(book.title) + '</strong><small>' + esc(book.author) + ' · 共 ' + state.episodes.length + ' 集（可继续翻页加载更多）</small></div></div>' +
       '<div class="ab-ep-list">' + (state.episodes.length ? state.episodes.map(function (ep, i) {
         var pct = pctOf(book, ep);
         return '<button class="ab-ep-row" data-ep-index="' + i + '"><span class="ab-ep-no">' + (i + 1) + '</span>' +
@@ -4956,7 +5011,7 @@ function checkUpdate() {
   function playEpisode(book, ep) {
     toast('正在查找《' + ep.title + '》的免费音源…');
     resolveXimalayaUrl(book, ep).then(function (url) {
-      if (!url) { toast('这一集暂无可用直链，已打开品牌页'); window.open(book.external, '_blank', 'noopener'); return; }
+      if (!url) { toast('这一集暂未取到直链，请稍后重试'); return; }
       var audio = $('#audio');
       if (!audio) return;
       state.playing = { book: book, ep: ep, url: url };
@@ -4966,7 +5021,7 @@ function checkUpdate() {
       var title = $('#playerTitle'), artist = $('#playerArtist'), cover = $('#playerCover');
       if (title) title.textContent = ep.title;
       if (artist) artist.textContent = book.title + ' · ' + book.author;
-      if (cover && book.cover) cover.src = book.cover;
+      if (cover) cover.src = book.cover || (window.KB_COVER_FALLBACK || '');
       var p = audio.play();
       if (p && p.catch) p.catch(function () { toast('已就绪，点击播放按钮开始'); });
       toast('开始播放：' + ep.title);
@@ -5016,7 +5071,6 @@ function checkUpdate() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 700); });
   else setTimeout(boot, 700);
 })();
-
 </script>
 <script>
 /* KB Music 音乐库增强：喜欢/收藏/最近播放/个人歌单/搜索面板/网址直达/分站提示 */
@@ -5178,7 +5232,7 @@ function checkUpdate() {
     host.innerHTML = list.map(function (p) {
       return '<button class="kb-playlist-item' + (state.currentPlaylistId === p.id ? ' is-active' : '') + '" data-playlist-id="' + esc(p.id) + '">' +
         '<span>♫ ' + esc(p.name) + '</span><span class="count">' + ((p.tracks || []).length) + '</span></button>';
-    }).join('') || '<div class="kb-playlist-item" style="opacity:.65">暂无歌单</div>';
+    }).join('') + '<button class="kb-playlist-new" data-lib-act="create">＋ 新建歌单</button>';
   }
   function createPlaylist() {
     var name = window.prompt('给新歌单起个名字：', '我的歌单 ' + (getPlaylists().length + 1));
@@ -5446,6 +5500,43 @@ function checkUpdate() {
     });
   }
 
+  /* ---------- 点击播放区任意位置打开歌词 ---------- */
+  function hookLyricsAnywhere() {
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('button,input,a,select,textarea,[role="slider"]')) return;
+      var bar = e.target.closest('.player-bar');
+      if (!bar) return;
+      var drawer = $('#lyricDrawer');
+      if (!drawer || !drawer.hidden) return;
+      var btn = $('#lyricBtn');
+      if (btn) btn.click();
+      else if (window.KBToast) window.KBToast('请先播放一首歌曲');
+    }, false);
+  }
+
+  /* ---------- 猜你喜欢 ---------- */
+  function buildGuessYouLike() {
+    var host = $('#discoverView');
+    if (!host || $('#kbGuessYouLike')) return;
+    var fav = (api().favorites() || []).map(function (t) { return t.title; }).filter(Boolean);
+    var picks = [];
+    getHistory().concat(fav).concat(['周杰伦', '晴天', '邓紫棋', 'lo-fi 纯音乐', '轻音乐', 'Taylor Swift']).forEach(function (q) {
+      if (q && picks.indexOf(q) < 0 && picks.length < 8) picks.push(q);
+    });
+    var box = document.createElement('section');
+    box.className = 'section';
+    box.id = 'kbGuessYouLike';
+    box.innerHTML = '<div class="sec-head"><h2>猜你喜欢</h2><span class="sec-sub">根据你的最近搜索与喜欢推荐</span></div>' +
+      '<div class="kb-guess-row">' + picks.map(function (q) {
+        return '<button class="kb-guess-chip" data-guess="' + esc(q) + '">' + esc(q) + '</button>';
+      }).join('') + '</div>';
+    host.appendChild(box);
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-guess]');
+      if (b) runSearch(b.getAttribute('data-guess'));
+    });
+  }
+
   /* ---------- 分站提示 ---------- */
   function branchPrompt() {
     if (location.hostname !== 'k-dji.github.io') return;
@@ -5615,7 +5706,7 @@ function checkUpdate() {
     }, 1800);
   }
   function boot() {
-    addViews(); addNav(); addPlayerStar(); buildSearchPanel(); bindLibActions(); branchPrompt(); hookRecent(); renderNavCounts();
+    addViews(); addNav(); addPlayerStar(); buildSearchPanel(); buildGuessYouLike(); bindLibActions(); hookLyricsAnywhere(); branchPrompt(); hookRecent(); renderNavCounts();
     var pm = location.pathname.match(/\/p\/([A-Za-z0-9_-]+)\/?$/);
     if (!pm) {
       var qs = new URLSearchParams(location.search).get('share');
