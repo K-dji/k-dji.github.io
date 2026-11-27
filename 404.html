@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>KB Music · 分享链接跳转</title>
+<style>body{margin:0;background:#0b0d12;color:#e8ecf4;font:14px/1.7 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;display:grid;place-items:center;min-height:100vh}.box{text-align:center;padding:24px}a{color:#22d3ee}</style>
+</head>
+<body>
+<div class="box" id="box">正在打开分享内容…</div>
+<script>
+(function () {
+  var p = location.pathname;
+  var m = p.match(/^\/(music|kbmusic)\/p\/([A-Za-z0-9_-]+)\/?$/);
+  if (m) { location.replace('/' + m[1] + '/index.html?share=' + m[2]); return; }
+  var s = p.match(/^\/(music|kbmusic)\/s\/([A-Za-z0-9_-]+)\/?$/);
+  if (s) { location.replace('/' + s[1] + '/index.html?song=' + s[2]); return; }
+  document.getElementById('box').innerHTML = '页面不存在。<br><a href="/music/">前往 KB Music 镜像站</a>';
+})();
+</script>
+</body>
+</html>
