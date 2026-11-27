@@ -5617,7 +5617,17 @@ function checkUpdate() {
   function boot() {
     addViews(); addNav(); addPlayerStar(); buildSearchPanel(); bindLibActions(); branchPrompt(); hookRecent(); renderNavCounts();
     var pm = location.pathname.match(/\/p\/([A-Za-z0-9_-]+)\/?$/);
+    if (!pm) {
+      var qs = new URLSearchParams(location.search).get('share');
+      if (qs) pm = [qs, qs];
+    }
     if (pm) setTimeout(function () { openShared(pm[1]); }, 700);
+    var song = new URLSearchParams(location.search).get('song');
+    if (song) setTimeout(function () {
+      var obj = b64d(song);
+      if (obj && obj.t) { toast('已识别分享歌曲：' + obj.t); runSearch(obj.t); }
+      else toast('歌曲链接无效');
+    }, 800);
   }
 
   window.KBMusicLibrary = {
