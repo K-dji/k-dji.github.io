@@ -79,7 +79,7 @@ a{color:var(--accent)}
         {k:'exePortable',ic:'🖥️',name:'电脑免安装版',sub:'EXE · 双击即用',url:d.exePortable,cls:''}
       ].filter(function(x){return x.url;});
       $('#dls').innerHTML=items.map(function(x,i){
-        return '<a class="dl '+x.cls+'" href="'+esc(x.url)+'" data-i="'+i+'"><span class="ic">'+x.ic+'</span><span><b>'+x.name+'</b><small>'+x.sub+'</small></span></a>';
+        return '<a class="dl '+x.cls+'" href="'+esc(x.url)+'" target="_blank" rel="noopener" data-i="'+i+'"><span class="ic">'+x.ic+'</span><span><b>'+x.name+'</b><small>'+x.sub+'</small></span></a>';
       }).join('');
       // 点击显示下载进度（fetch 流读进度 + 触发保存）
       $('#dls').addEventListener('click',function(e){
