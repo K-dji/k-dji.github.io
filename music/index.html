@@ -1025,6 +1025,34 @@ body.kb-custom-theme .section h2,body.kb-custom-theme .track-title,body.kb-custo
 #lyricDrawer[data-stage="caption"] #lyricBody>*{display:inline-block;padding:5px 14px;margin:3px auto;border:1px solid rgba(255,255,255,.35);border-radius:8px;background:rgba(0,0,0,.35);font-size:15px}
 #lyricDrawer[data-stage="dialogue"] #lyricBody>*{max-width:74%;margin-left:0;margin-right:auto;text-align:left;padding:7px 12px;border-radius:14px 14px 14px 4px;background:rgba(255,255,255,.14);font-size:14px}
 #lyricDrawer[data-stage="dialogue"] #lyricBody>*:nth-child(even){margin-left:auto;margin-right:0;border-radius:14px 14px 4px 14px;background:rgba(7,193,96,.22)}
+
+/* 手机端做减法：酷狗概念版式简洁首页 */
+body.kb-mobile-site .source-strip,
+body.kb-mobile-site .footnote,
+body.kb-mobile-site .kb-audiobook,
+body.kb-mobile-site .kb-guess,
+body.kb-mobile-site .section-head__meta{display:none!important}
+body.kb-mobile-site .content{padding-left:14px!important;padding-right:14px!important}
+body.kb-mobile-site .kb-mobile-grid .kb-mg-list{gap:10px 4px}
+body.kb-mobile-site .kb-mobile-grid .kb-mg-icon{width:44px;height:44px}
+body.kb-mobile-site .shelf{grid-auto-columns:84px}
+body.kb-mobile-site .track-list .track-row{min-height:62px}
+
+/* 桌面端：稳妥的三区结构，右侧播放信息栏 */
+.kb-right-rail{display:none}
+@media (min-width:1200px){
+  body.kb-desktop-site .content{padding-right:326px!important}
+  body.kb-desktop-site .kb-right-rail{display:block;position:fixed;right:0;top:0;bottom:64px;width:306px;z-index:40;background:var(--card-bg);border-left:1px solid var(--line);padding:18px 16px;overflow:auto}
+  .kb-right-rail h3{font-size:14px;margin:0 0 14px;color:var(--text)}
+  .kb-right-rail .kb-rr-cover{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:16px;background:var(--chip)}
+  .kb-right-rail .kb-rr-title{font-size:16px;font-weight:800;margin-top:14px;color:var(--text)}
+  .kb-right-rail .kb-rr-artist{font-size:12px;color:var(--muted);margin-top:4px}
+  .kb-right-rail .kb-rr-lyric{margin-top:16px;padding:10px 0;border-top:1px solid var(--line)}
+  .kb-right-rail .kb-rr-lyric div{font-size:12px;line-height:1.9;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kb-right-rail .kb-rr-lyric div.on{color:var(--accent);font-weight:700;font-size:13px}
+  .kb-right-rail .kb-rr-actions{display:flex;gap:8px;margin-top:14px}
+  .kb-right-rail .kb-rr-actions button{flex:1;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:10px;padding:8px 0;font-size:12px;cursor:pointer}
+}
 /* ---------- KB Music 有声书栏目 ---------- */
 .ab-searchbar{display:flex;gap:10px;margin:14px 0 12px;flex-wrap:wrap}
 .ab-searchbar input{flex:1;min-width:220px;height:42px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-input);background:var(--card);color:var(--text);font-size:13px;outline:none}
@@ -4531,7 +4559,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 20; // 当前网页版本序号
+  var APP_VERSION = 21; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -4638,6 +4666,37 @@ function checkUpdate() {
     }
   }
 
+  function buildRightRail() {
+    if ($('#kbRightRail')) return;
+    var rail = document.createElement('aside');
+    rail.className = 'kb-right-rail';
+    rail.id = 'kbRightRail';
+    rail.innerHTML = '<h3>正在播放</h3><img class="kb-rr-cover" alt=""><div class="kb-rr-title">KB Music</div><div class="kb-rr-artist">选择一首歌曲开始播放</div>' +
+      '<div class="kb-rr-lyric"></div><div class="kb-rr-actions"><button type="button" data-rr="lyric">歌词</button><button type="button" data-rr="queue">队列</button></div>';
+    document.body.appendChild(rail);
+    rail.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-rr]');
+      if (!b) return;
+      if (b.getAttribute('data-rr') === 'lyric') { var lb = $('#lyricBtn'); if (lb) lb.click(); }
+      else { var q = $('.nav-item[data-view="queue"]'); if (q) q.click(); }
+    });
+    function sync() {
+      var cover = $('#playerCover'), img = $('.kb-rr-cover', rail);
+      if (cover && img && cover.src && img.src !== cover.src) img.src = cover.src;
+      var t = $('#playerTitle'), a = $('#playerArtist');
+      if (t) $('.kb-rr-title', rail).textContent = t.textContent || 'KB Music';
+      if (a) $('.kb-rr-artist', rail).textContent = a.textContent || '';
+      var body = $('#lyricBody'), box = $('.kb-rr-lyric', rail);
+      if (body && box) {
+        var lines = $$('#lyricLine, .lyric-line, p', body).map(function (n) { return { text: (n.textContent || '').trim(), on: n.classList.contains('is-active') || n.classList.contains('active') }; }).filter(function (x) { return x.text; });
+        if (!lines.some(function (x) { return x.on; }) && lines.length) lines[0].on = true;
+        box.innerHTML = lines.slice(0, 8).map(function (x) { return '<div class="' + (x.on ? 'on' : '') + '">' + x.text + '</div>'; }).join('');
+      }
+    }
+    setInterval(sync, 700);
+    sync();
+  }
+
   function playQuery(q) {
     var api = window.KBMusicAPI;
     if (!api || !q) return;
@@ -4680,6 +4739,7 @@ function checkUpdate() {
       initDownloadButtons();
       handleShareRoute();
       hookDirectPlay();
+      buildRightRail();
       checkUpdate();
     }, 400);
   }
@@ -6153,6 +6213,7 @@ function checkUpdate() {
   else setTimeout(boot, 800);
 })();
 </script>
+
 
 
 
