@@ -999,6 +999,23 @@ body.kb-desktop-site .kb-site-badge{border-radius:0 0 12px 12px}
 .update-actions button{padding:8px 14px;border-radius:var(--r-input);font-size:var(--fs-small);font-weight:600;cursor:pointer}
 .update-yes{background:var(--accent);color:#fff;border:0}
 .update-no{background:var(--surface-2);color:var(--text);border:1px solid var(--line)}
+
+/* KB Music 配色主题系统 */
+body.kb-custom-theme,body.kb-custom-theme .main-wrap,body.kb-custom-theme .content,
+body.kb-custom-theme .sidebar,body.kb-custom-theme .topbar,body.kb-custom-theme .player-bar,
+body.kb-custom-theme .hero,body.kb-custom-theme .section{background:var(--kb-bg)!important;color:var(--kb-fg)!important}
+body.kb-custom-theme .shelf-card,body.kb-custom-theme .rec-card,body.kb-custom-theme .card,
+body.kb-custom-theme .side-card,body.kb-custom-theme .modal-card,body.kb-custom-theme .track-row,
+body.kb-custom-theme .kb-mobile-grid .kb-mg-item{background:var(--kb-in)!important;color:var(--kb-in-fg)!important;border-color:transparent!important}
+body.kb-custom-theme .track-row.is-playing{background:var(--kb-in)!important}
+body.kb-custom-theme .search-box,body.kb-custom-theme input,body.kb-custom-theme select{background:var(--kb-input)!important;color:var(--kb-in-fg)!important}
+body.kb-custom-theme .hero__title,body.kb-custom-theme .hero__sub,body.kb-custom-theme .sec-head h2,
+body.kb-custom-theme .section h2,body.kb-custom-theme .track-title,body.kb-custom-theme .shelf-card__name{color:var(--kb-fg)!important}
+.kb-palette-modal .modal-card{max-width:720px}
+.kb-palette-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 0;max-height:52vh;overflow:auto}
+.kb-palette-grid button{min-height:62px;border:1px solid rgba(127,127,127,.2);border-radius:12px;font-size:12px;font-weight:700;cursor:pointer}
+.kb-palette-grid button:hover{outline:2px solid var(--accent)}
+.kb-palette-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
 /* ---------- KB Music 有声书栏目 ---------- */
 .ab-searchbar{display:flex;gap:10px;margin:14px 0 12px;flex-wrap:wrap}
 .ab-searchbar input{flex:1;min-width:220px;height:42px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-input);background:var(--card);color:var(--text);font-size:13px;outline:none}
@@ -1255,7 +1272,7 @@ body.kb-branch-open .app,body.kb-branch-open .main-wrap{padding-top:38px}
         </div>
 
         <div class='source-strip' id='sourceStrip'></div>
-        <p class='footnote'>本项目由个人开发者「靠北科技」运营（非商业团队） · 2026-靠北 Chat。聚合公开音乐接口，仅用于个人学习与试听；版权归各平台及权利方所有。搜索结果只是临时视图，不会写进播放队列。</p>
+        <p class='footnote'>本项目由个人开发者「靠北科技」运营（非商业团队） · 2026-靠北 Chat。聚合公开音乐接口，仅用于个人学习与试听；版权归各平台及权利方所有。点击热歌直接播放，搜索队列随时可切。</p>
       </section>
 
       <!-- ===================== 搜索结果 ===================== -->
@@ -4505,7 +4522,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 18; // 当前网页版本序号
+  var APP_VERSION = 19; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -4612,6 +4629,36 @@ function checkUpdate() {
     }
   }
 
+  function playQuery(q) {
+    var api = window.KBMusicAPI;
+    if (!api || !q) return;
+    api.doSearch(q);
+    var tries = 0;
+    var timer = setInterval(function () {
+      var rs = api.results();
+      if (rs.length) { clearInterval(timer); api.playTrack(rs[0]); }
+      else if (++tries > 30) clearInterval(timer);
+    }, 200);
+  }
+
+  function hookDirectPlay() {
+    var tags = $('#quickTags');
+    if (tags) tags.addEventListener('click', function (e) {
+      var tag = e.target.closest('[data-query]');
+      if (!tag) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      playQuery(tag.dataset.query);
+    }, true);
+    var shelf = $('#shelfGrid');
+    if (shelf) shelf.addEventListener('click', function (e) {
+      var card = e.target.closest('[data-shelf]');
+      if (!card) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      var name = card.querySelector('.shelf-card__name, .shelf-card-name');
+      if (name && name.textContent) playQuery(name.textContent.trim());
+    }, true);
+  }
+
   function boot() {
     setTimeout(function () {
       markSite();
@@ -4623,6 +4670,7 @@ function checkUpdate() {
       addNavItem();
       initDownloadButtons();
       handleShareRoute();
+      hookDirectPlay();
       checkUpdate();
     }, 400);
   }
@@ -6066,6 +6114,103 @@ function checkUpdate() {
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 800); });
   else setTimeout(boot, 800);
+})();
+</script>
+<script>
+/* KB Music 配色主题系统 SCRIPT：来源 KB Chat 背景样式参考库 */
+(function () {
+  'use strict';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var LS = {
+    get: function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+  var THEMES = [
+    { id:'clean', n:'纯净白', b:'#ffffff', f:'#1c1c1e', ib:'#f2f3f5', ob:'#95ec69', iff:'#1c1c1e', off:'#1c1c1e', nav:'#ededed', inp:'#f7f7f7' },
+    { id:'cream', n:'暖奶油', b:'#fdf8f0', f:'#3a3228', ib:'#ffffff', ob:'#ffe3a8', iff:'#3a3228', off:'#3a3228', nav:'#f3ead9', inp:'#fffdf9' },
+    { id:'paper', n:'纸张色', b:'#f5f2eb', f:'#33302a', ib:'#ffffff', ob:'#dce8cf', iff:'#33302a', off:'#33302a', nav:'#eae6dc', inp:'#fbf9f4' },
+    { id:'mint', n:'薄荷清新', b:'#eaf6f1', f:'#24463c', ib:'#ffffff', ob:'#b8e6d4', iff:'#24463c', off:'#1e3b32', nav:'#d8ede4', inp:'#f4fbf8' },
+    { id:'sky', n:'天空蓝', b:'#eaf3fb', f:'#20384d', ib:'#ffffff', ob:'#bcdcf7', iff:'#20384d', off:'#1b3448', nav:'#dbe9f6', inp:'#f5faff' },
+    { id:'lavender', n:'柔和薰衣草', b:'#f3eff8', f:'#3d3350', ib:'#ffffff', ob:'#d9cbed', iff:'#3d3350', off:'#3a3050', nav:'#e8e0f2', inp:'#faf7fd' },
+    { id:'rosepink', n:'玫瑰粉', b:'#fceef1', f:'#4d2f38', ib:'#ffffff', ob:'#f6c9d6', iff:'#4d2f38', off:'#4a2c35', nav:'#f5dde4', inp:'#fff7f9' },
+    { id:'wechat', n:'经典深灰', b:'#1e1e1e', f:'#e6e6e6', ib:'#2c2c2c', ob:'#3eae5c', iff:'#e6e6e6', off:'#ffffff', nav:'#1a1a1a', inp:'#252525' },
+    { id:'navy', n:'深海军蓝', b:'#191f28', f:'#d6dae0', ib:'#262e39', ob:'#345d8a', iff:'#d6dae0', off:'#ffffff', nav:'#141a22', inp:'#1f2731' },
+    { id:'midnight', n:'午夜蓝', b:'#1a1e2e', f:'#d5d9e6', ib:'#272d40', ob:'#3c5a9a', iff:'#d5d9e6', off:'#ffffff', nav:'#151925', inp:'#20263a' },
+    { id:'amoled', n:'纯黑 AMOLED', b:'#000000', f:'#e0e0e0', ib:'#1c1c1c', ob:'#2f6b46', iff:'#e0e0e0', off:'#ffffff', nav:'#000000', inp:'#0d0d0d' },
+    { id:'rosetnight', n:'墨夜玫瑰', b:'#2a1f24', f:'#eadde0', ib:'#3a2b31', ob:'#8c5a68', iff:'#eadde0', off:'#ffffff', nav:'#22181c', inp:'#312329' },
+    { id:'forest', n:'森林绿', b:'#1b2620', f:'#d4ded6', ib:'#27342b', ob:'#3c7a56', iff:'#d4ded6', off:'#ffffff', nav:'#151e19', inp:'#212e26' },
+    { id:'mistnight', n:'雾蓝深夜', b:'#152232', f:'#cdd8e6', ib:'#22354a', ob:'#3a628c', iff:'#cdd8e6', off:'#ffffff', nav:'#101a28', inp:'#1b2b3d' },
+    { id:'dots', n:'圆点网格', b:'radial-gradient(circle,rgba(127,127,127,.13) 1px,transparent 1.2px) 0 0/16px 16px,#f7f8fa', f:'#2c2f36', ib:'#ffffff', ob:'#95ec69', iff:'#2c2f36', off:'#1c1c1e', nav:'#ededed', inp:'#ffffff' },
+    { id:'dotsdark', n:'暗夜星点', b:'radial-gradient(circle,rgba(255,255,255,.10) 1px,transparent 1.2px) 0 0/18px 18px,#191f28', f:'#d6dae0', ib:'#262e39', ob:'#345d8a', iff:'#d6dae0', off:'#ffffff', nav:'#141a22', inp:'#1f2731' },
+    { id:'stripes', n:'斜纹布', b:'repeating-linear-gradient(45deg,rgba(140,160,130,.06) 0 8px,transparent 8px 16px),#f2f6ef', f:'#2e3a30', ib:'#ffffff', ob:'#c2e0b8', iff:'#2e3a30', off:'#1e2a20', nav:'#e6ede2', inp:'#fafdf8' },
+    { id:'grid', n:'方格纸', b:'linear-gradient(rgba(120,140,170,.10) 1px,transparent 1px) 0 0/20px 20px,linear-gradient(90deg,rgba(120,140,170,.10) 1px,transparent 1px) 0 0/20px 20px,#f7f9fc', f:'#2b3442', ib:'#ffffff', ob:'#bcd6f2', iff:'#2b3442', off:'#1e2a38', nav:'#e9eef6', inp:'#fbfdff' },
+    { id:'sunrise', n:'晨曦暖橙', b:'linear-gradient(160deg,#fff4e8 0%,#fde6d8 55%,#f8d9cf 100%)', f:'#4a3329', ib:'rgba(255,255,255,.85)', ob:'#ffc9a3', iff:'#4a3329', off:'#42291f', nav:'rgba(255,244,232,.75)', inp:'rgba(255,255,255,.6)' },
+    { id:'aurora', n:'极光薄荷', b:'linear-gradient(150deg,#e8f7ef 0%,#d9f2ee 50%,#d6e9f7 100%)', f:'#26453f', ib:'rgba(255,255,255,.82)', ob:'#a9dfcd', iff:'#26453f', off:'#1e3a34', nav:'rgba(232,247,239,.75)', inp:'rgba(255,255,255,.6)' },
+    { id:'fogblue', n:'雾蓝海', b:'linear-gradient(165deg,#dbe9f5 0%,#c9dbee 60%,#b8cee5 100%)', f:'#243b52', ib:'rgba(255,255,255,.7)', ob:'#7fa9d4', iff:'#243b52', off:'#ffffff', nav:'rgba(219,233,245,.75)', inp:'rgba(255,255,255,.55)' },
+    { id:'sagesky', n:'雨后青提', b:'linear-gradient(160deg,#eaf3e6 0%,#dcefe9 45%,#d7eaf5 100%)', f:'#2c443c', ib:'rgba(255,255,255,.82)', ob:'#b3dcc4', iff:'#2c443c', off:'#21382f', nav:'rgba(234,243,230,.75)', inp:'rgba(255,255,255,.6)' },
+    { id:'nightglow', n:'深夜暖光', b:'radial-gradient(circle at 78% 12%,rgba(180,120,90,.20),transparent 55%),linear-gradient(160deg,#241c22 0%,#1b1519 60%,#161114 100%)', f:'#e6d9d5', ib:'rgba(60,44,50,.9)', ob:'#8c5a68', iff:'#e6d9d5', off:'#ffffff', nav:'rgba(30,22,26,.85)', inp:'rgba(48,36,42,.7)' },
+    { id:'glasslight', n:'磨砂浅色', b:'linear-gradient(135deg,#f3eaff 0%,#e6f0fa 50%,#ffeaf0 100%)', f:'#332f42', ib:'rgba(255,255,255,.55)', ob:'rgba(160,200,240,.7)', iff:'#2f3b4a', off:'#22303f', nav:'rgba(255,255,255,.45)', inp:'rgba(255,255,255,.5)' },
+    { id:'glassdark', n:'磨砂深色', b:'linear-gradient(135deg,#2a2340 0%,#162b3a 55%,#241a2b 100%)', f:'#e2dcea', ib:'rgba(255,255,255,.12)', ob:'rgba(90,140,190,.55)', iff:'#e2dcea', off:'#ffffff', nav:'rgba(20,18,30,.6)', inp:'rgba(255,255,255,.08)' },
+    { id:'grain', n:'柔光颗粒', b:'radial-gradient(circle at 25% 20%,rgba(255,214,180,.35),transparent 45%),radial-gradient(circle at 80% 75%,rgba(180,205,235,.35),transparent 50%),#f6f3ef', f:'#3a3532', ib:'rgba(255,255,255,.7)', ob:'#ecd3bd', iff:'#3a3532', off:'#3a2e25', nav:'rgba(246,243,239,.75)', inp:'rgba(255,255,255,.6)' }
+  ];
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]; }); }
+  function applyTheme(t) {
+    if (!t) return;
+    var s = document.documentElement.style;
+    s.setProperty('--kb-bg', t.b); s.setProperty('--kb-fg', t.f);
+    s.setProperty('--kb-in', t.ib); s.setProperty('--kb-out', t.ob);
+    s.setProperty('--kb-in-fg', t.iff); s.setProperty('--kb-out-fg', t.off);
+    s.setProperty('--kb-nav', t.nav); s.setProperty('--kb-input', t.inp);
+    document.body.classList.add('kb-custom-theme');
+    LS.set('kb-color-theme', t.id);
+  }
+  function build() {
+    var grid = $('#settingsModal .modal-grid');
+    if (grid && !$('#kbPaletteOpen')) {
+      var field = document.createElement('div');
+      field.className = 'field';
+      field.innerHTML = '<label>界面配色（' + THEMES.length + ' 套）</label><button class="btn btn--ghost" id="kbPaletteOpen" type="button">打开配色面板</button>';
+      grid.appendChild(field);
+    }
+    if ($('#kbPaletteModal')) return;
+    var custom = LS.get('kb-color-custom', []) || [];
+    var all = THEMES.concat(custom);
+    var modal = document.createElement('div');
+    modal.className = 'modal kb-palette-modal';
+    modal.id = 'kbPaletteModal';
+    modal.hidden = true;
+    modal.innerHTML = '<div class="modal-card"><div class="modal-head"><h3>界面配色</h3><button class="icon-btn" data-close-modal aria-label="关闭">✕</button></div>' +
+      '<div class="kb-palette-grid">' + all.map(function (t) {
+        return '<button type="button" data-theme="' + esc(t.id) + '" style="background:' + t.b + ';color:' + t.f + '">' + esc(t.n) + '</button>';
+      }).join('') + '</div><div class="kb-palette-actions"><button class="btn btn--ghost" id="kbAddTheme" type="button">＋ 新增配色</button><button class="btn btn--ghost" id="kbResetTheme" type="button">恢复默认</button></div></div>';
+    document.body.appendChild(modal);
+    var opener = $('#kbPaletteOpen');
+    if (opener) opener.addEventListener('click', function () { modal.hidden = false; });
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal || e.target.closest('[data-close-modal]')) { modal.hidden = true; return; }
+      var b = e.target.closest('[data-theme]');
+      if (b) { var t = all.filter(function (x) { return x.id === b.getAttribute('data-theme'); })[0]; applyTheme(t); modal.hidden = true; }
+    });
+    $('#kbResetTheme').addEventListener('click', function () {
+      document.body.classList.remove('kb-custom-theme');
+      LS.set('kb-color-theme', '');
+      ['--kb-bg','--kb-fg','--kb-in','--kb-out','--kb-in-fg','--kb-out-fg','--kb-nav','--kb-input'].forEach(function (k) { document.documentElement.style.removeProperty(k); });
+      modal.hidden = true;
+    });
+    $('#kbAddTheme').addEventListener('click', function () {
+      var n = window.prompt('配色名称：', '我的配色');
+      if (!n) return;
+      var bg = window.prompt('背景色或 CSS 渐变：', '#ffffff');
+      if (!bg) return;
+      var fg = window.prompt('文字色：', '#1c1c1e') || '#1c1c1e';
+      var t = { id: 'custom-' + Date.now(), n: n, b: bg, f: fg, ib: 'rgba(255,255,255,.75)', ob: 'rgba(7,193,96,.35)', iff: fg, off: '#fff', nav: bg, inp: 'rgba(255,255,255,.6)' };
+      custom.push(t); LS.set('kb-color-custom', custom); all.push(t); applyTheme(t); modal.hidden = true;
+    });
+    var saved = LS.get('kb-color-theme', '');
+    if (saved) { var cur = all.filter(function (x) { return x.id === saved; })[0]; if (cur) applyTheme(cur); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(build, 600); });
+  else setTimeout(build, 600);
 })();
 </script>
 </body>
