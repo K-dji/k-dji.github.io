@@ -833,6 +833,13 @@ body{
    ============================================================ */
 .kb-site-badge{position:fixed;left:50%;top:0;transform:translateX(-50%);z-index:120;padding:4px 12px;border-radius:0 0 10px 10px;background:rgba(124,92,255,.9);color:#fff;font-size:10px;font-weight:700;letter-spacing:.4px}
 .kb-site-badge a{color:#fff;text-decoration:underline;margin-left:8px}
+/* 手机版首页：参考主流音乐平台的分类入口网格 */
+.kb-mobile-grid{margin-top:4px}
+.kb-mobile-grid .kb-mg-title{font-size:15px;font-weight:800;margin:2px 2px 12px;color:var(--text)}
+.kb-mobile-grid .kb-mg-list{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 6px}
+.kb-mobile-grid .kb-mg-item{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;color:var(--muted);font-size:11px;cursor:pointer}
+.kb-mobile-grid .kb-mg-icon{width:48px;height:48px;border-radius:18px;display:grid;place-items:center;font-size:22px;color:#fff;box-shadow:0 8px 18px rgba(24,35,61,.12)}
+.kb-mobile-grid .kb-mg-item:active .kb-mg-icon{transform:scale(.92)}
 /* 手机版歌词：大歌词 → 双语列表轨迹动画 */
 body.kb-mobile-site #lyricDrawer{position:relative}
 body.kb-mobile-site #lyricDrawer .kb-lyric-art{transition:transform .48s cubic-bezier(.2,.9,.25,1),opacity .35s;transform-origin:50% 45%}
@@ -845,7 +852,8 @@ body.kb-mobile-site #lyricDrawer.kb-lyric-trans #lyricBody>.is-active::after{con
 body.kb-mobile-site .kb-lyric-rail{position:absolute;right:10px;top:34%;z-index:5;display:flex;flex-direction:column;gap:10px;opacity:0;transform:translateX(22px);transition:opacity .32s,transform .32s}
 body.kb-mobile-site #lyricDrawer.kb-lyric-list-mode .kb-lyric-rail{opacity:1;transform:none}
 body.kb-mobile-site .kb-lyric-rail button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,107,154,.18);color:#fff;font-size:12px;font-weight:700;backdrop-filter:blur(8px)}
-body.kb-mobile-site{--accent:#ff6b9a;--accent-press:#e85582;--accent-soft:rgba(255,107,154,.14);--accent-line:rgba(255,107,154,.38);--accent-glow:rgba(255,107,154,.28)}
+body.kb-mobile-site{--accent:#00bfa5;--accent-press:#009e8a;--accent-soft:rgba(0,191,165,.14);--accent-line:rgba(0,191,165,.38);--accent-glow:rgba(0,191,165,.28)}
+body.kb-mobile-site[data-theme="light"]{background:linear-gradient(180deg,#f2fffd,#eafaf7)!important}
 body.kb-mobile-site .app{max-width:480px;margin:0 auto}
 body.kb-desktop-site .app{max-width:none}
 /* 电脑版：QQ 音乐式沉浸布局 + 大圆角 */
@@ -4451,7 +4459,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 12; // 当前网页版本序号
+  var APP_VERSION = 13; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -4529,7 +4537,7 @@ function checkUpdate() {
     var mobile = h === 'kbmusic.pages.dev' || (h === 'k-dji.github.io' && p.indexOf('/kbmusic') === 0);
     document.body.classList.add(mobile ? 'kb-mobile-site' : 'kb-desktop-site');
     if (!LS.get('kb-theme-v1', null)) {
-      var initial = mobile ? 'dark' : 'light';
+      var initial = 'light';
       LS.set('kb-theme-v1', { theme: initial, wallpaper: 'aurora' });
       document.body.dataset.theme = initial;
     }
@@ -5521,6 +5529,30 @@ function checkUpdate() {
     });
   }
 
+  /* ---------- 手机版首页分类入口（参考主流音乐平台） ---------- */
+  function buildMobileGrid() {
+    if ($('#kbMobileGrid')) return;
+    var host = $('#discoverView');
+    if (!host) return;
+    var cats = [
+      ['♫', '华语流行', '#ff8a9b', '周杰伦'], ['☾', '深夜电台', '#7c8cff', 'lo-fi 纯音乐'],
+      ['★', '热歌榜', '#ffb45c', '热门 金曲'], ['❀', '古风国风', '#5fd3a6', '中国风 古风'],
+      ['⚡', '摇滚现场', '#ff7a6b', '摇滚 现场'], ['✿', '治愈轻音', '#5ac8e8', '治愈 轻音乐'],
+      ['♪', '欧美热歌', '#b08cff', 'Taylor Swift'], ['◉', ' personal 私藏', '#f4a6d0', '我的收藏']
+    ];
+    var box = document.createElement('section');
+    box.className = 'section kb-mobile-grid';
+    box.id = 'kbMobileGrid';
+    box.innerHTML = '<div class="kb-mg-title">音乐分类</div><div class="kb-mg-list">' + cats.map(function (c) {
+      return '<button class="kb-mg-item" data-mg="' + esc(c[3]) + '"><span class="kb-mg-icon" style="background:linear-gradient(135deg,' + c[2] + ',' + c[2] + '99)">' + c[0] + '</span><span>' + esc(c[1]) + '</span></button>';
+    }).join('') + '</div>';
+    host.insertBefore(box, host.firstChild);
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-mg]');
+      if (b) { var q = b.getAttribute('data-mg'); if (q === '我的收藏') showView('favorites', '我的收藏'); else runSearch(q); }
+    });
+  }
+
   /* ---------- 更新小球：覆盖 AI 球，水位进度 ---------- */
   function hookUpdateBall() {
     document.addEventListener('click', function (e) {
@@ -5918,7 +5950,7 @@ function checkUpdate() {
     }, 1800);
   }
   function boot() {
-    buildThemeTools(); hookUpdateBall(); addViews(); addNav(); addRankView(); addPlayerStar(); buildSearchPanel(); buildGuessYouLike(); bindLibActions(); hookLyricsAnywhere(); hookFunButtons(); branchPrompt(); hookRecent(); renderNavCounts();
+    buildThemeTools(); hookUpdateBall(); addViews(); addNav(); addRankView(); buildMobileGrid(); addPlayerStar(); buildSearchPanel(); buildGuessYouLike(); bindLibActions(); hookLyricsAnywhere(); hookFunButtons(); branchPrompt(); hookRecent(); renderNavCounts();
     var pm = location.pathname.match(/\/p\/([A-Za-z0-9_-]+)\/?$/);
     if (!pm) {
       var qs = new URLSearchParams(location.search).get('share');
