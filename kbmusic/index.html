@@ -898,13 +898,13 @@ body.kb-desktop-site .content{max-width:none!important;margin:0!important;width:
 body.kb-desktop-site .topbar{height:auto!important;margin:10px 16px 0;border-radius:20px;padding:8px 18px!important;box-shadow:0 6px 18px rgba(30,40,60,.05)}
 body.kb-desktop-site .sidebar{width:56px!important;max-width:56px;min-width:56px;margin:0!important;border-radius:0;padding:12px 8px!important;border:0!important;align-items:center!important;overflow:hidden}
 body.kb-desktop-site .sidebar *{font-size:0!important;color:transparent!important}
-body.kb-desktop-site .sidebar svg{font-size:18px!important;color:var(--faint)!important}
+body.kb-desktop-site .sidebar svg,body.kb-desktop-site .sidebar svg *{font-size:18px!important;color:var(--faint)!important}
 body.kb-desktop-site .sidebar .brand-text,body.kb-desktop-site .nav-label,body.kb-desktop-site .side-card,body.kb-desktop-site .sidebar__close,body.kb-desktop-site .nav-item .count,body.kb-desktop-site .kb-playlist-toggle,body.kb-desktop-site .kb-playlist-list,body.kb-desktop-site .health{display:none!important}
 body.kb-desktop-site .brand{padding:2px 0 12px!important;justify-content:center}
 body.kb-desktop-site .brand-mark{width:32px;height:32px;border-radius:10px;font-size:12px!important;color:var(--accent-ink)!important}
 body.kb-desktop-site .nav{width:100%;align-items:center}
 body.kb-desktop-site .nav-item{width:40px;height:40px;min-height:40px!important;padding:0!important;justify-content:center;border-radius:12px!important}
-body.kb-desktop-site .nav-item.active svg{color:var(--accent)!important}
+body.kb-desktop-site .nav-item.active svg,body.kb-desktop-site .nav-item.active svg *{color:var(--accent)!important}
 body.kb-desktop-site #kbMobileGrid{display:none!important}
 body.kb-desktop-site .shelf{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:14px;overflow:visible;margin:0!important;padding:0!important}
 body.kb-desktop-site .shelf-card{border-radius:14px!important;box-shadow:0 8px 20px rgba(30,40,60,.08)}
@@ -4570,7 +4570,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 22; // 当前网页版本序号
+  var APP_VERSION = 23; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -6259,6 +6259,7 @@ function checkUpdate() {
   else setTimeout(boot, 800);
 })();
 </script>
+
 
 
 
