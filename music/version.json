@@ -1,7 +1,7 @@
 {
-  "version": 12,
-  "webVersion": 17,
-  "versionName": "1.1.2 / 1.1.1",
+  "version": 13,
+  "webVersion": 18,
+  "versionName": "1.1.2 / 1.1.2",
   "releasedAt": "2026-11-28",
   "forceThreshold": 3,
   "changelog": [
