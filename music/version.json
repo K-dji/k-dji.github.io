@@ -1,7 +1,7 @@
 {
   "version": 16,
   "webVersion": 23,
-  "versionName": "1.1.6 / 1.1.5",
+  "versionName": "1.1.7 / 1.1.5",
   "releasedAt": "2026-11-28",
   "forceThreshold": 3,
   "changelog": [
@@ -12,10 +12,10 @@
   ],
   "downloads": {
     "apk": "https://kaobei-music.pages.dev/api/apk",
-    "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.6/KB-Music-1.1.6-x64.exe",
-    "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.6/KB-Music-1.1.6-portable.exe"
+    "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.7/KB-Music-1.1.7-x64.exe",
+    "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.7/KB-Music-1.1.7-portable.exe"
   },
   "apk": "https://kaobei-music.pages.dev/api/apk",
-  "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.6/KB-Music-1.1.6-x64.exe",
+  "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.7/KB-Music-1.1.7-x64.exe",
   "webUrl": "https://kaobei-music.pages.dev/"
 }
