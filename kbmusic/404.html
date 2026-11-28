@@ -870,19 +870,20 @@ body.kb-mobile-site .app{max-width:480px;margin:0 auto}
 body.kb-desktop-site .app{max-width:none}
 /* 电脑版：QQ 音乐式沉浸布局 + 大圆角 */
 body.kb-desktop-site{padding-right:0!important}
-body.kb-desktop-site .app{grid-template-columns:92px minmax(0,1fr)!important}
+body.kb-desktop-site .app{grid-template-columns:208px minmax(0,1fr)!important}
 body.kb-desktop-site .main-wrap{min-width:0}
-body.kb-desktop-site .sidebar{width:78px!important;max-width:78px;min-width:78px}
-body.kb-desktop-site .content{max-width:none!important;margin:0!important;width:100%!important}
+body.kb-desktop-site .content{max-width:none!important;margin:0!important;width:100%!important;padding:18px 26px 120px!important}
 body.kb-desktop-site .topbar{height:auto!important;margin:12px 14px 0;border-radius:18px;padding:10px 18px!important;box-shadow:0 8px 24px rgba(24,35,61,.06)}
-body.kb-desktop-site .sidebar{width:78px;margin:12px 0 12px 12px;border-radius:18px;padding:14px 8px!important;border:0!important;box-shadow:0 8px 24px rgba(24,35,61,.06);align-items:center}
-body.kb-desktop-site .sidebar .brand-text,body.kb-desktop-site .nav-label,body.kb-desktop-site .nav-item>span:not(.count),body.kb-desktop-site .side-card,body.kb-desktop-site .sidebar__close{display:none!important}
-body.kb-desktop-site .brand{padding:4px 0 10px!important}
-body.kb-desktop-site .nav{width:100%;align-items:center}
-body.kb-desktop-site .nav-item{width:52px;height:52px;min-height:52px!important;padding:0!important;justify-content:center;border-radius:16px!important;font-size:0}
-body.kb-desktop-site .nav-item svg{font-size:20px!important}
-body.kb-desktop-site .nav-item .count{position:absolute;transform:translate(18px,-16px);min-width:16px;height:16px;font-size:9px;padding:0 4px}
-body.kb-desktop-site .content{padding:18px 26px 120px!important}
+body.kb-desktop-site .sidebar{width:auto!important;max-width:none;min-width:0;margin:0;border-radius:0 18px 18px 0;padding:18px 12px!important;border:0!important;box-shadow:0 8px 24px rgba(24,35,61,.06);align-items:stretch;font-size:13px}
+body.kb-desktop-site .sidebar .brand-text,body.kb-desktop-site .nav-label,body.kb-desktop-site .side-card,body.kb-desktop-site .sidebar__close{display:block!important}
+body.kb-desktop-site .sidebar .nav-item>span:not(.count){display:inline!important}
+body.kb-desktop-site .brand{padding:4px 6px 10px!important}
+body.kb-desktop-site .nav{width:100%;align-items:stretch}
+body.kb-desktop-site .nav-item{width:auto;height:auto;min-height:42px!important;padding:0 12px!important;justify-content:flex-start;border-radius:12px!important;font-size:13.5px!important}
+body.kb-desktop-site .nav-item svg{font-size:18px!important}
+body.kb-desktop-site .nav-item .count{position:static;transform:none;min-width:20px;height:20px;font-size:10.5px;padding:0 6px}
+body.kb-desktop-site #kbMobileGrid{display:none!important}
+body.kb-desktop-site .hero__title,body.kb-desktop-site .hero__sub,body.kb-desktop-site .hero .chip{color:#fff!important}
 body.kb-desktop-site .section,body.kb-desktop-site .side-card,body.kb-desktop-site .shelf-card,body.kb-desktop-site .rec-card,body.kb-desktop-site .download-btn{border-radius:20px!important}
 body.kb-desktop-site .shelf-cover{display:grid;place-items:center;aspect-ratio:4/5;border-radius:16px;color:#fff;font-size:28px;font-weight:700}
 body.kb-desktop-site .player-bar{top:auto!important;right:0!important;bottom:0!important;left:0!important;width:auto!important;height:78px!important;flex-direction:row!important;align-items:center!important;gap:12px!important;padding:0 22px!important;border-radius:20px 20px 0 0!important;border-top:1px solid var(--line)!important;border-left:0!important;box-shadow:0 -10px 30px rgba(24,35,61,.08)!important;overflow:hidden}
@@ -4475,7 +4476,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 15; // 当前网页版本序号
+  var APP_VERSION = 16; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
