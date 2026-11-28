@@ -846,7 +846,6 @@ body.kb-mobile-site .kb-mobile-tabs button>span:first-child{position:relative}
 body.kb-mobile-site .content{padding-bottom:calc(var(--bar-h,64px) + 76px)!important}
 body.kb-mobile-site #discoverView .view-head{display:none!important}
 body.kb-mobile-site .hero{display:none!important}
-body.kb-mobile-site #shelfGrid{display:none!important}
 body.kb-mobile-site .kb-mobile-grid{margin-top:10px!important}
 /* 手机版：顶部标签 + 网易云式个人页 */
 body.kb-mobile-site .kb-mobile-top-tabs{display:flex;align-items:center;gap:14px;padding:2px 16px 10px}
@@ -5634,7 +5633,8 @@ function checkUpdate() {
     box.innerHTML = '<div class="kb-mg-title">音乐分类</div><div class="kb-mg-list">' + cats.map(function (c) {
       return '<button class="kb-mg-item" data-mg="' + esc(c[3]) + '"><span class="kb-mg-icon" style="background:linear-gradient(135deg,' + c[2] + ',' + c[2] + '99)">' + c[0] + '</span><span>' + esc(c[1]) + '</span></button>';
     }).join('') + '</div>';
-    host.insertBefore(box, host.firstChild);
+    var tabs = $('#kbMobileTopTabs');
+    host.insertBefore(box, tabs && tabs.nextSibling ? tabs.nextSibling : host.firstChild);
     box.addEventListener('click', function (e) {
       var b = e.target.closest('[data-mg]');
       if (b) { var q = b.getAttribute('data-mg'); if (q === '我的收藏') showView('favorites', '我的收藏'); else runSearch(q); }
