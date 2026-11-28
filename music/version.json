@@ -1,21 +1,22 @@
 {
-  "version": 18,
-  "webVersion": 28,
-  "versionName": "1.1.8 / 1.1.7",
+  "version": 19,
+  "webVersion": 29,
+  "versionName": "1.1.9 / 1.1.8",
   "releasedAt": "2026-11-28",
   "forceThreshold": 3,
   "changelog": [
-    "EXE 去掉菜单栏与白色边框，改为深色沉浸标题栏",
-    "电脑版网页与 EXE 重做 QQ 音乐式圆角布局，浅色为默认、可切深色",
-    "统一推荐卡片图标样式，修复点击歌词无响应",
-    "手机版与电脑版站点保持独立布局，所有站点保留 EXE/APK 下载"
+    "APK/网页同款形态转换：迷你条一镜到底展开全屏，下滑收起/回弹",
+    "歌词占满全屏：补全唱片舞台样式，小屏自适应，不再卡成小块",
+    "按钮单一性：去除无翻译数据的「译」、假心形、重复唱片标签与假队列按钮",
+    "兼容性：进度条按实际宽度定位，配色跟随主题，缩小屏适配"
   ],
   "downloads": {
     "apk": "https://kaobei-music.pages.dev/api/apk",
-    "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.8/KB-Music-1.1.8-x64.exe",
-    "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.8/KB-Music-1.1.8-portable.exe"
+    "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.9/KB-Music-1.1.9-x64.exe",
+    "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.9/KB-Music-1.1.9-portable.exe"
   },
   "apk": "https://kaobei-music.pages.dev/api/apk",
-  "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.8/KB-Music-1.1.8-x64.exe",
-  "webUrl": "https://kaobei-music.pages.dev/"
+  "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.9/KB-Music-1.1.9-x64.exe",
+  "webUrl": "https://kaobei-music.pages.dev/",
+  "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.1.9/KB-Music-1.1.9-portable.exe"
 }
