@@ -1064,6 +1064,30 @@ body.kb-desktop-site .shelf-card__cover{aspect-ratio:1/1!important;border-radius
 .kb-lx-tools .kb-lx-right{margin-left:auto;display:flex;gap:8px}
 .kb-lx-tools .kb-lx-right button{border:1px solid var(--line);background:var(--card-bg)}
 body.kb-mobile-site .kb-lx-tools{display:none!important}
+
+/* ===== 手机端 UI 重做：先解决溢出与遮挡，再重排层级 ===== */
+body.kb-mobile-site{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+body.kb-mobile-site .app,
+body.kb-mobile-site .main-wrap,
+body.kb-mobile-site .content{width:100%!important;max-width:100%!important;margin:0!important;padding-left:14px!important;padding-right:14px!important}
+body.kb-mobile-site .topbar{padding-left:12px!important;padding-right:12px!important}
+body.kb-mobile-site .topbar .back-toggle,
+body.kb-mobile-site .topbar .nick-chip,
+body.kb-mobile-site #kbWallpaperToggle{display:none!important}
+body.kb-mobile-site .topbar__actions{gap:6px!important}
+body.kb-mobile-site .kb-mobile-grid .kb-mg-list{width:100%!important;grid-template-columns:repeat(4,minmax(0,1fr))!important}
+body.kb-mobile-site .kb-mobile-grid .kb-mg-item{min-width:0!important;padding-left:2px;padding-right:2px}
+body.kb-mobile-site .kb-mobile-grid .kb-mg-icon{width:44px;height:44px}
+body.kb-mobile-site .shelf{width:100%!important;grid-auto-columns:86px!important;overflow-x:auto!important;padding-left:0!important;padding-right:0!important}
+body.kb-mobile-site .shelf-card{min-width:0!important}
+body.kb-mobile-site .kb-mobile-tabs{left:0!important;right:0!important;bottom:0!important;height:58px!important;z-index:95!important}
+body.kb-mobile-site .player-bar{bottom:58px!important;z-index:80!important}
+body.kb-mobile-site .content{padding-bottom:calc(58px + 64px + 24px)!important}
+body.kb-mobile-site .kb-site-badge{left:12px!important;right:auto!important;bottom:calc(58px + 64px + 10px)!important;transform:none!important;z-index:96!important;opacity:.92}
+body.kb-mobile-site .kb-profile-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+body.kb-mobile-site .track-list .track-row{min-height:58px}
+body.kb-mobile-site .track-title{font-size:14px!important}
+body.kb-mobile-site .track-artist{font-size:11px!important}
 /* ---------- KB Music 有声书栏目 ---------- */
 .ab-searchbar{display:flex;gap:10px;margin:14px 0 12px;flex-wrap:wrap}
 .ab-searchbar input{flex:1;min-width:220px;height:42px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-input);background:var(--card);color:var(--text);font-size:13px;outline:none}
@@ -4570,7 +4594,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 23; // 当前网页版本序号
+  var APP_VERSION = 24; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -6259,6 +6283,7 @@ function checkUpdate() {
   else setTimeout(boot, 800);
 })();
 </script>
+
 
 
 
