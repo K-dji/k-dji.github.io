@@ -1156,7 +1156,7 @@ body.kb-morph-closing .player-bar{animation:kbMorphSheetOut .34s cubic-bezier(.2
 
 /* ===== 歌词占满全屏（补全未定义的舞台样式 + 小屏适配） ===== */
 /* 舞台 DOM 在 JS 里创建但此前没有任何 CSS，导致歌词卡成小块 */
-#lyricDrawer.kb-stage{height:100dvh!important;max-height:100dvh!important;bottom:0!important;top:0!important;border-radius:0!important;display:flex;flex-direction:column;overflow:hidden}
+body.kb-mobile-site #lyricDrawer.kb-stage,#lyricDrawer.kb-stage{position:fixed!important;inset:0!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:100dvh!important;max-height:100dvh!important;border-radius:0!important;display:flex!important;flex-direction:column;overflow:hidden;z-index:200!important}
 #lyricDrawer.kb-stage .lyric-head{flex:none;padding:calc(var(--safe-t) + 14px) 18px 10px}
 #lyricDrawer.kb-stage .lyric-body{flex:1;min-height:0;overflow-y:auto;padding:8vh 22px 12vh}
 #lyricDrawer.kb-stage .lyric-body p{margin:0 0 clamp(14px,2.6vh,26px);font-size:clamp(15px,4.2vw,18px);line-height:1.7}
@@ -4699,7 +4699,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 29; // 当前网页版本序号
+  var APP_VERSION = 28; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -6471,6 +6471,7 @@ function checkUpdate() {
   else setTimeout(boot, 800);
 })();
 </script>
+
 
 
 
