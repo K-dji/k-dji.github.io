@@ -831,6 +831,30 @@ body{
 /* ============================================================
    KB Music 功能增强样式：听书 / 猜你喜欢 / 热门推荐 / 分享 / 下载 / 最近播放
    ============================================================ */
+.kb-site-badge{position:fixed;left:50%;top:0;transform:translateX(-50%);z-index:120;padding:4px 12px;border-radius:0 0 10px 10px;background:rgba(124,92,255,.9);color:#fff;font-size:10px;font-weight:700;letter-spacing:.4px}
+.kb-site-badge a{color:#fff;text-decoration:underline;margin-left:8px}
+body.kb-mobile-site .app{max-width:480px;margin:0 auto}
+body.kb-desktop-site .app{max-width:none}
+/* 电脑版：QQ 音乐式沉浸布局 + 大圆角 */
+body.kb-desktop-site{padding-right:0!important}
+body.kb-desktop-site .topbar{height:auto!important;margin:12px 14px 0;border-radius:18px;padding:10px 18px!important;box-shadow:0 8px 24px rgba(24,35,61,.06)}
+body.kb-desktop-site .sidebar{width:78px;margin:12px 0 12px 12px;border-radius:18px;padding:14px 8px!important;border:0!important;box-shadow:0 8px 24px rgba(24,35,61,.06);align-items:center}
+body.kb-desktop-site .sidebar .brand-text,body.kb-desktop-site .nav-label,body.kb-desktop-site .nav-item>span:not(.count),body.kb-desktop-site .side-card,body.kb-desktop-site .sidebar__close{display:none!important}
+body.kb-desktop-site .brand{padding:4px 0 10px!important}
+body.kb-desktop-site .nav{width:100%;align-items:center}
+body.kb-desktop-site .nav-item{width:52px;height:52px;min-height:52px!important;padding:0!important;justify-content:center;border-radius:16px!important;font-size:0}
+body.kb-desktop-site .nav-item svg{font-size:20px!important}
+body.kb-desktop-site .nav-item .count{position:absolute;transform:translate(18px,-16px);min-width:16px;height:16px;font-size:9px;padding:0 4px}
+body.kb-desktop-site .content{padding:18px 26px 120px!important}
+body.kb-desktop-site .section,body.kb-desktop-site .side-card,body.kb-desktop-site .shelf-card,body.kb-desktop-site .rec-card,body.kb-desktop-site .download-btn{border-radius:20px!important}
+body.kb-desktop-site .shelf-cover{display:grid;place-items:center;aspect-ratio:4/5;border-radius:16px;color:#fff;font-size:28px;font-weight:700}
+body.kb-desktop-site .player-bar{top:auto!important;right:0!important;bottom:0!important;left:0!important;width:auto!important;height:78px!important;flex-direction:row!important;align-items:center!important;gap:12px!important;padding:0 22px!important;border-radius:20px 20px 0 0!important;border-top:1px solid var(--line)!important;border-left:0!important;box-shadow:0 -10px 30px rgba(24,35,61,.08)!important;overflow:hidden}
+body.kb-desktop-site .player-bar .player-track{flex:0 0 240px}
+body.kb-desktop-site .player-bar .player-center{flex:1}
+body.kb-desktop-site .player-bar .player-extras{flex:0 0 auto}
+body.kb-desktop-site .player-bar .player-cover{width:52px;height:52px;border-radius:10px}
+body.kb-desktop-site .toast-wrap{right:24px!important;bottom:96px!important}
+body.kb-desktop-site .kb-site-badge{border-radius:0 0 12px 12px}
 /* 分区标题行 */
 .sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:22px 2px 12px}
 .sec-head h2{font-size:var(--fs-h2);font-weight:700;letter-spacing:.2px}
@@ -908,113 +932,6 @@ body{
 .update-actions button{padding:8px 14px;border-radius:var(--r-input);font-size:var(--fs-small);font-weight:600;cursor:pointer}
 .update-yes{background:var(--accent);color:#fff;border:0}
 .update-no{background:var(--surface-2);color:var(--text);border:1px solid var(--line)}
-
-
-
-/* ---------- 移动端点击蓝框修复 ---------- */
-*,*::before,*::after{-webkit-tap-highlight-color:transparent!important}
-button,a,.icon-btn,.nav-item,.tag,.chip,.download-btn,.nav-chip,.share-btn,.recent-chip{-webkit-tap-highlight-color:transparent!important;outline:none}
-button:focus,a:focus,.icon-btn:focus{-webkit-tap-highlight-color:transparent!important}
-
-
-/* 昵称 chip：紧凑、置于顶栏右侧动作区之前 */
-.nick-chip{display:inline-flex;align-items:center;gap:3px;padding:4px 8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);font-size:11px;line-height:1;max-width:88px;white-space:nowrap;overflow:hidden}
-.nick-chip b{color:var(--accent);font-weight:600;max-width:56px;overflow:hidden;text-overflow:ellipsis;display:inline-block;vertical-align:middle}
-@media(max-width:959px){
-  .topbar__actions{gap:4px}
-  #nickChip{font-size:11px;padding:4px 7px;max-width:76px}
-  #nickChip b{max-width:44px}
-}
-
-
-
-/* ---------- 手机端遮挡/裁切修复 ---------- */
-@media(max-width:600px){
-  .section-head{flex-wrap:wrap;gap:4px}
-  .section-head__meta{font-size:10.5px;white-space:nowrap}
-  /* 推荐卡片行右侧 meta 在窄屏可能溢出裁切，允许换行 */
-  .section-head h2{flex-shrink:0}
-  /* hscroll 明确约束宽度，避免撑破父容器 */
-  .hscroll{max-width:100%;min-width:0}
-  /* 音源状态细条区在发现页避免与说明文字重叠 */
-  .source-status-strip,.source-strip{max-width:100%;overflow-x:auto}
-}
-/* 底部迷你播放器遮住内容：给 content 预留足够 padding（含安全区） */
-.content{padding-bottom:calc(var(--bar-h, 64px) + var(--safe-b, 0px) + 28px) !important}
-
-
-/* ============================================================
-   酷狗概念版风格增强：玻璃拟态 / 唱片机封面 / 光晕 / 播放页样式切换
-   ============================================================ */
-.player-bar.is-expanded{position:relative;overflow:hidden}
-.player-bar.is-expanded .kg-aura{position:absolute;left:50%;top:-10%;width:120vw;height:70vh;transform:translateX(-50%);pointer-events:none;z-index:0;filter:blur(60px);opacity:.5;background:radial-gradient(closest-side,rgba(124,92,255,.55),rgba(34,211,238,.22) 55%,transparent 75%);animation:kg-breathe 8s ease-in-out infinite}
-@keyframes kg-breathe{0%,100%{opacity:.42;transform:translateX(-50%) scale(1)}50%{opacity:.68;transform:translateX(-50%) scale(1.08)}}
-.player-bar.is-expanded>*:not(.kg-aura){position:relative;z-index:1}
-
-/* 封面唱片机质感 */
-.player-bar.is-expanded .player-cover-area{position:relative}
-.player-bar.is-expanded .player-cover-area::before{content:'';position:absolute;width:min(80vw,330px);height:min(80vw,330px);border-radius:50%;background:repeating-radial-gradient(circle at center,rgba(255,255,255,.06) 0,rgba(255,255,255,.06) 1px,transparent 1px,transparent 4px),radial-gradient(circle at center,#1a1a2e,#0a0a14);box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.08);z-index:0;transition:opacity var(--dur),transform var(--dur)}
-.player-bar.is-expanded.kg-vinyl .player-cover-area::before{opacity:1;animation:kg-spin 18s linear infinite}
-.player-bar.is-expanded:not(.kg-vinyl) .player-cover-area::before{opacity:0}
-@keyframes kg-spin{to{transform:rotate(360deg)}}
-.player-bar.is-expanded .player-cover{position:relative;z-index:1;transition:border-radius var(--dur),box-shadow var(--dur),transform var(--dur)}
-.player-bar.is-expanded.kg-vinyl .player-cover{border-radius:50%;box-shadow:0 12px 40px rgba(0,0,0,.55),inset 0 0 0 6px rgba(0,0,0,.25)}
-/* 唱片中心孔 */
-.player-bar.is-expanded.kg-vinyl .player-cover-area::after{content:'';position:absolute;z-index:2;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,#0a0a14 40%,rgba(255,255,255,.18) 45%,transparent 70%);pointer-events:none;top:50%;left:50%;transform:translate(-50%,-50%)}
-
-/* 样式切换按钮 */
-.kg-style-btn{display:none!important}
-.player-bar.is-expanded .kg-style-btn{display:inline-flex!important;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--muted);font-size:16px;cursor:pointer}
-
-/* 歌词抽屉：环游高亮增强 */
-.lyric-drawer.kg-orbit .lyric-body{position:relative}
-.lyric-drawer.kg-orbit .lyric-body p{transition:all .35s cubic-bezier(.2,.8,.2,1);transform-origin:center}
-.lyric-drawer.kg-orbit .lyric-body p.active{font-size:20px;font-weight:700;color:#fff;text-shadow:0 0 24px rgba(124,92,255,.9),0 0 48px rgba(34,211,238,.5);transform:scale(1.04)}
-.lyric-drawer.kg-orbit .lyric-body p:not(.active){opacity:.5;filter:blur(.4px)}
-/* 歌词样式切换小按钮 */
-.kg-lyric-style{margin-left:auto;font-size:11px;padding:5px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted);cursor:pointer}
-
-/* 点赞按钮：更醒目 */
-.player-bar.is-expanded #likeBtn.active{box-shadow:0 0 0 1px var(--warm),0 6px 18px rgba(251,113,133,.25)}
-
-
-/* ---------- KB Music 大屏歌词页（桌面端） ---------- */
-.kb-lyric-art,.kb-lyric-banner{display:none}
-@keyframes kb-spin{to{transform:rotate(360deg)}}
-@media (min-width:960px){
-  .lyric-drawer.kb-stage{
-    left:0;right:0;top:0;bottom:0;width:100vw;max-height:none;height:100dvh;
-    display:grid;grid-template-columns:minmax(280px,38vw) minmax(0,1fr);
-    grid-template-rows:56px minmax(0,1fr) 104px;column-gap:clamp(24px,5vw,80px);
-    padding:20px clamp(24px,6vw,96px) 22px;border:0;border-radius:0;
-    background:radial-gradient(circle at 18% 46%,rgba(124,92,255,.26),transparent 38%),radial-gradient(circle at 84% 28%,rgba(34,211,238,.14),transparent 42%),linear-gradient(135deg,var(--bg-top),var(--bg-bottom));
-    animation:fadeIn .28s var(--ease);z-index:200;
-  }
-  .lyric-drawer.kb-stage .lyric-head{grid-column:1/-1;grid-row:1;padding:0;align-items:center;gap:14px}
-  .lyric-drawer.kb-stage .lyric-head h3{font-size:12px;letter-spacing:.18em;color:var(--faint)}
-  .lyric-drawer.kb-stage .lyric-head p{margin:0;color:var(--muted);font-size:12px}
-  .lyric-drawer.kb-stage .kb-lyric-art{grid-column:1;grid-row:2;display:grid;place-items:center;position:relative;min-height:0}
-  .kb-vinyl{width:min(34vw,360px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:repeating-radial-gradient(circle at center,#151521 0 3px,#242436 3px 5px,#11111a 5px 8px);box-shadow:0 32px 90px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.07);animation:kb-spin 18s linear infinite;animation-play-state:paused}
-  .kb-stage-playing .kb-vinyl{animation-play-state:running}
-  .kb-vinyl-label{width:38%;aspect-ratio:1;border-radius:50%;overflow:hidden;border:3px solid rgba(255,255,255,.16);box-shadow:0 0 0 8px rgba(124,92,255,.14)}
-  .kb-vinyl-label img{width:100%;height:100%;object-fit:cover;display:block;background:var(--surface-2)}
-  .kb-vinyl-hole{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--bg-bottom);box-shadow:inset 0 0 0 2px rgba(255,255,255,.14)}
-  .kb-tonearm{position:absolute;top:6%;right:8%;width:5px;height:44%;border-radius:99px;background:linear-gradient(180deg,#d7d7e6,#6f6f86);transform:rotate(24deg);transform-origin:top center;box-shadow:0 8px 20px rgba(0,0,0,.35)}
-  .kb-tonearm::after{content:'';position:absolute;bottom:-14px;left:-9px;width:23px;height:23px;border-radius:50%;background:linear-gradient(135deg,#8b8ba3,#3b3b4d);border:2px solid rgba(255,255,255,.2)}
-  .lyric-drawer.kb-stage .lyric-body{grid-column:2;grid-row:2;padding:10vh 1.5vw 16vh;overflow-y:auto;scroll-behavior:auto;-webkit-mask-image:linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);mask-image:linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent)}
-  .lyric-drawer.kb-stage .lyric-body p{margin:0 0 24px;font-size:clamp(17px,1.75vw,25px);line-height:1.45;color:rgba(255,255,255,.38);text-align:left;transition:color .28s,font-size .28s,transform .28s}
-  .lyric-drawer.kb-stage .lyric-body p.active{font-size:clamp(24px,2.45vw,34px);font-weight:700;color:#fff;transform:translateX(8px);text-shadow:0 0 28px rgba(124,92,255,.75),0 0 56px rgba(34,211,238,.4)}
-  .lyric-drawer.kb-stage .lyric-body p:not(.active){opacity:.86}
-  .lyric-drawer.kb-stage .lyric-empty{text-align:left;color:var(--muted)}
-  .lyric-drawer.kb-stage .kb-lyric-banner{grid-column:1/-1;grid-row:3;display:flex;align-items:center;gap:14px;padding:12px 18px;border:1px solid rgba(255,255,255,.1);border-radius:18px;background:rgba(255,255,255,.06);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-  .kb-lyric-banner img{width:62px;height:62px;flex:none;border-radius:12px;object-fit:cover;background:var(--surface-2)}
-  .kb-stage-banner-meta{flex:1;min-width:0}
-  .kb-stage-banner-meta strong{display:block;font-size:16px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .kb-stage-banner-meta span{display:block;margin-top:4px;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .kb-stage-banner-progress{width:min(26vw,220px);height:4px;flex:none;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden}
-  .kb-stage-banner-progress i{display:block;width:0;height:100%;border-radius:99px;background:linear-gradient(90deg,#7c5cff,#22d3ee);transition:width .2s linear}
-  .kb-stage-time{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-}
 /* ---------- KB Music 有声书栏目 ---------- */
 .ab-searchbar{display:flex;gap:10px;margin:14px 0 12px;flex-wrap:wrap}
 .ab-searchbar input{flex:1;min-width:220px;height:42px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-input);background:var(--card);color:var(--text);font-size:13px;outline:none}
@@ -4155,8 +4072,7 @@ var QRCode;
     var profile = LS.get('kb-music-profile-v1', null) || { nickname: '音乐爱好者', musicCode: 'kbmusic-' + Math.random().toString(36).slice(2, 8) };
     if (!profile.nickname) profile.nickname = '音乐爱好者';
     LS.set('kb-music-profile-v1', profile);
-    var actions = $('.topbar__actions');
-    var topbar = actions || $('.topbar') || $('.topbar-right');
+    var topbar = $('.topbar') || $('.topbar__actions') || $('.topbar-right');
     if (!topbar) return;
     if ($('#nickChip')) return;
     var chip = document.createElement('span');
@@ -4174,13 +4090,7 @@ var QRCode;
         if (window.KBToast) window.KBToast('昵称已保存到本机');
       }
     });
-    // 放到右上角动作区：搜索与设置之间
-    var settingsBtn = $('#settingsBtn');
-    if (actions && settingsBtn && settingsBtn.parentNode === actions) {
-      actions.insertBefore(chip, settingsBtn);
-    } else {
-      topbar.appendChild(chip);
-    }
+    topbar.appendChild(chip);
   }
 
   /* ---------- 最近播放 ---------- */
@@ -4387,14 +4297,13 @@ var QRCode;
   function encodeShare(t) {
     try {
       var obj = { t: t.title, a: t.artist, c: t.cover || '', k: t.key || '' };
-      return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))).replace(/\=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
+      return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))).replace(/=+$/, '');
     } catch (e) { return ''; }
   }
   function decodeShare(code) {
     try {
-      var norm = code.replace(/-/g, '+').replace(/_/g, '/');
-      var pad = norm.length % 4 ? '===='.slice(norm.length % 4) : '';
-      var json = decodeURIComponent(escape(atob(norm + pad)));
+      var pad = code.length % 4 ? '===='.slice(code.length % 4) : '';
+      var json = decodeURIComponent(escape(atob(code + pad)));
       return JSON.parse(json);
     } catch (e) { return null; }
   }
@@ -4529,7 +4438,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 11; // 当前网页版本序号
+  var APP_VERSION = 12; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -4601,8 +4510,28 @@ function checkUpdate() {
   }
 
   /* ---------- 启动 ---------- */
+  function markSite() {
+    var h = location.hostname || '';
+    var p = location.pathname || '';
+    var mobile = h === 'kbmusic.pages.dev' || (h === 'k-dji.github.io' && p.indexOf('/kbmusic') === 0);
+    document.body.classList.add(mobile ? 'kb-mobile-site' : 'kb-desktop-site');
+    if (!LS.get('kb-theme-v1', null)) {
+      var initial = mobile ? 'dark' : 'light';
+      LS.set('kb-theme-v1', { theme: initial, wallpaper: 'aurora' });
+      document.body.dataset.theme = initial;
+    }
+    if ($('.kb-site-badge')) return;
+    var badge = document.createElement('div');
+    badge.className = 'kb-site-badge';
+    badge.innerHTML = mobile
+      ? '手机版 · <a href="https://kaobei-music.pages.dev/">切换电脑版</a>'
+      : '电脑版 · <a href="https://kbmusic.pages.dev/">切换手机版</a>';
+    document.body.appendChild(badge);
+  }
+
   function boot() {
     setTimeout(function () {
+      markSite();
       initNick();
       hookRecent();
       hookShareButtons();
@@ -4626,7 +4555,6 @@ function checkUpdate() {
     doSearch: doSearch
   };
 })();
-
 </script>
 
 <script>
