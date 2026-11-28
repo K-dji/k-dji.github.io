@@ -840,11 +840,30 @@ body.kb-mobile-site .kb-mobile-tabs{display:flex;position:fixed;left:0;right:0;b
 body.kb-mobile-site .kb-mobile-tabs button{flex:1;height:100%;border:0;background:none;color:var(--muted);font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 body.kb-mobile-site .kb-mobile-tabs button span:first-child{font-size:17px;line-height:1}
 body.kb-mobile-site .kb-mobile-tabs button.is-active{color:var(--accent)}
+body.kb-mobile-site .kb-mobile-tabs .kb-mtab-photo span{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#ffb199,#ff6b9a);color:#fff;display:grid;place-items:center;font-size:16px;margin-top:-8px;border:2px solid #fff;box-shadow:0 4px 12px rgba(255,107,154,.35)}
+body.kb-mobile-site .kb-mobile-tabs button i{position:absolute;top:-4px;right:-8px;min-width:14px;height:14px;border-radius:7px;background:#ff3b30;color:#fff;font-size:9px;font-style:normal;line-height:14px;text-align:center}
+body.kb-mobile-site .kb-mobile-tabs button>span:first-child{position:relative}
 body.kb-mobile-site .content{padding-bottom:calc(var(--bar-h,64px) + 76px)!important}
 body.kb-mobile-site #discoverView .view-head{display:none!important}
 body.kb-mobile-site .hero{display:none!important}
 body.kb-mobile-site #shelfGrid{display:none!important}
 body.kb-mobile-site .kb-mobile-grid{margin-top:10px!important}
+/* 手机版：顶部标签 + 网易云式个人页 */
+body.kb-mobile-site .kb-mobile-top-tabs{display:flex;align-items:center;gap:14px;padding:2px 16px 10px}
+body.kb-mobile-site .kb-mobile-top-tabs button{border:0;background:none;color:var(--muted);font-size:15px;font-weight:700;padding:4px 0}
+body.kb-mobile-site .kb-mobile-top-tabs button.is-active{color:var(--accent);font-size:18px}
+body.kb-mobile-site .kb-mobile-top-tabs .kb-mt-icons{margin-left:auto;font-size:13px;color:var(--muted)}
+body.kb-mobile-site .shelf{display:grid!important;grid-auto-flow:column;grid-auto-columns:96px;gap:10px;overflow-x:auto;margin:0!important;padding:4px 16px 10px!important}
+body.kb-mobile-site .shelf-card__cover,body.kb-mobile-site .shelf-cover{aspect-ratio:1/1!important;border-radius:50%!important;font-size:30px}
+body.kb-mobile-site .shelf-card__name,body.kb-mobile-site .shelf-card-sub{display:none}
+body.kb-mobile-site .kb-profile-header{margin:0 0 14px;padding:16px;border-radius:20px;background:linear-gradient(135deg,#dff8f5,#cdeefc)}
+body.kb-mobile-site .kb-profile-top{display:flex;align-items:center;gap:12px;color:#173c3a}
+body.kb-mobile-site .kb-profile-avatar{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#7bdcc9,#4aa8c8);color:#fff;font-size:24px}
+body.kb-mobile-site .kb-profile-top strong{font-size:16px;display:block}
+body.kb-mobile-site .kb-profile-top small{font-size:10px;opacity:.7}
+body.kb-mobile-site .kb-profile-top em{margin-left:auto;font-style:normal;font-size:10px;padding:3px 7px;border-radius:9px;background:#ffd76a;color:#5b3b00}
+body.kb-mobile-site .kb-profile-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+body.kb-mobile-site .kb-profile-grid button{border:0;border-radius:14px;background:rgba(255,255,255,.72);color:#173c3a;font-size:10px;padding:10px 4px}
 /* 手机版首页：参考主流音乐平台的分类入口网格 */
 .kb-mobile-grid{margin-top:4px}
 .kb-mobile-grid .kb-mg-title{font-size:15px;font-weight:800;margin:2px 2px 12px;color:var(--text)}
@@ -4487,7 +4506,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 17; // 当前网页版本序号
+  var APP_VERSION = 18; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -4580,9 +4599,9 @@ function checkUpdate() {
       var tabs = document.createElement('nav');
       tabs.className = 'kb-mobile-tabs';
       tabs.id = 'kbMobileTabs';
-      tabs.innerHTML = '<button type="button" data-mtab="discover" class="is-active"><span>◈</span>发现</button>' +
-        '<button type="button" data-mtab="search"><span>⌕</span>搜索</button>' +
-        '<button type="button" data-mtab="favorites"><span>☺</span>我的</button>';
+      tabs.innerHTML = '<button type="button" data-mtab="discover" class="is-active"><span>▥</span>发现</button>' +
+        '<button type="button" data-mtab="search" class="kb-mtab-photo"><span>♪</span>音乐</button>' +
+        '<button type="button" data-mtab="favorites"><span>☺<i>1</i></span>我的</button>';
       document.body.appendChild(tabs);
       tabs.addEventListener('click', function (e) {
         var b = e.target.closest('[data-mtab]');
@@ -5573,6 +5592,31 @@ function checkUpdate() {
     });
   }
 
+  /* ---------- 手机版：顶部标签 + 网易云式个人页头 ---------- */
+  function buildMobileShell() {
+    if (!$('#kbMobileTopTabs')) {
+      var host = $('#discoverView');
+      if (host) {
+        var top = document.createElement('div');
+        top.className = 'kb-mobile-top-tabs';
+        top.id = 'kbMobileTopTabs';
+        top.innerHTML = '<button class="is-active">发现</button><button>刷歌</button><button>乐库</button><span class="kb-mt-icons">免 · ⌕ · ☺</span>';
+        host.insertBefore(top, host.firstChild);
+      }
+    }
+    if (!$('#kbMobileProfile')) {
+      var fav = $('#favoritesView');
+      if (fav) {
+        var p = document.createElement('div');
+        p.className = 'kb-profile-header';
+        p.id = 'kbMobileProfile';
+        p.innerHTML = '<div class="kb-profile-top"><span class="kb-profile-avatar">♪</span><div><strong>音乐爱好者</strong><small>本地音乐库 · 数据仅保存在本机</small></div><em>VIP</em></div>' +
+          '<div class="kb-profile-grid"><button data-pg="favorites">♥ 收藏</button><button data-pg="recent">◷ 最近</button><button data-pg="local">▤ 本地</button><button data-pg="bought">◇ 已购</button></div>';
+        fav.insertBefore(p, fav.firstChild);
+      }
+    }
+  }
+
   /* ---------- 手机版首页分类入口（参考主流音乐平台） ---------- */
   function buildMobileGrid() {
     if ($('#kbMobileGrid')) return;
@@ -5994,7 +6038,7 @@ function checkUpdate() {
     }, 1800);
   }
   function boot() {
-    buildThemeTools(); hookUpdateBall(); addViews(); addNav(); addRankView(); buildMobileGrid(); addPlayerStar(); buildSearchPanel(); buildGuessYouLike(); bindLibActions(); hookLyricsAnywhere(); hookFunButtons(); branchPrompt(); hookRecent(); renderNavCounts();
+    buildThemeTools(); hookUpdateBall(); addViews(); addNav(); addRankView(); buildMobileShell(); buildMobileGrid(); addPlayerStar(); buildSearchPanel(); buildGuessYouLike(); bindLibActions(); hookLyricsAnywhere(); hookFunButtons(); branchPrompt(); hookRecent(); renderNavCounts();
     var pm = location.pathname.match(/\/p\/([A-Za-z0-9_-]+)\/?$/);
     if (!pm) {
       var qs = new URLSearchParams(location.search).get('share');
