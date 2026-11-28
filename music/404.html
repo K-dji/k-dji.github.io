@@ -858,6 +858,10 @@ body.kb-mobile-site .app{max-width:480px;margin:0 auto}
 body.kb-desktop-site .app{max-width:none}
 /* 电脑版：QQ 音乐式沉浸布局 + 大圆角 */
 body.kb-desktop-site{padding-right:0!important}
+body.kb-desktop-site .app{grid-template-columns:92px minmax(0,1fr)!important}
+body.kb-desktop-site .main-wrap{min-width:0}
+body.kb-desktop-site .sidebar{width:78px!important;max-width:78px;min-width:78px}
+body.kb-desktop-site .content{max-width:none!important;margin:0!important;width:100%!important}
 body.kb-desktop-site .topbar{height:auto!important;margin:12px 14px 0;border-radius:18px;padding:10px 18px!important;box-shadow:0 8px 24px rgba(24,35,61,.06)}
 body.kb-desktop-site .sidebar{width:78px;margin:12px 0 12px 12px;border-radius:18px;padding:14px 8px!important;border:0!important;box-shadow:0 8px 24px rgba(24,35,61,.06);align-items:center}
 body.kb-desktop-site .sidebar .brand-text,body.kb-desktop-site .nav-label,body.kb-desktop-site .nav-item>span:not(.count),body.kb-desktop-site .side-card,body.kb-desktop-site .sidebar__close{display:none!important}
@@ -4459,7 +4463,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 13; // 当前网页版本序号
+  var APP_VERSION = 14; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
