@@ -1034,7 +1034,7 @@ body.kb-mobile-site .kb-guess,
 body.kb-mobile-site .section-head__meta{display:none!important}
 body.kb-mobile-site .content{padding-left:14px!important;padding-right:14px!important}
 body.kb-mobile-site .kb-mobile-grid .kb-mg-list{gap:10px 4px}
-body.kb-mobile-site .kb-mobile-grid .kb-mg-icon{width:44px;height:44px}
+body.kb-mobile-site .kb-mobile-grid .kb-mg-icon{width:42px;height:42px}
 body.kb-mobile-site .shelf{grid-auto-columns:84px}
 body.kb-mobile-site .track-list .track-row{min-height:62px}
 
@@ -1075,9 +1075,9 @@ body.kb-mobile-site .topbar .back-toggle,
 body.kb-mobile-site .topbar .nick-chip,
 body.kb-mobile-site #kbWallpaperToggle{display:none!important}
 body.kb-mobile-site .topbar__actions{gap:6px!important}
-body.kb-mobile-site .kb-mobile-grid .kb-mg-list{width:100%!important;grid-template-columns:repeat(4,minmax(0,1fr))!important}
+body.kb-mobile-site .kb-mobile-grid .kb-mg-list{width:100%!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px 6px!important}
 body.kb-mobile-site .kb-mobile-grid .kb-mg-item{min-width:0!important;padding-left:2px;padding-right:2px}
-body.kb-mobile-site .kb-mobile-grid .kb-mg-icon{width:44px;height:44px}
+body.kb-mobile-site .kb-mobile-grid .kb-mg-icon{width:42px;height:42px}
 body.kb-mobile-site .shelf{width:100%!important;grid-auto-columns:86px!important;overflow-x:auto!important;padding-left:0!important;padding-right:0!important}
 body.kb-mobile-site .shelf-card{min-width:0!important}
 body.kb-mobile-site .kb-mobile-tabs{left:0!important;right:0!important;bottom:0!important;height:58px!important;z-index:95!important}
@@ -1088,6 +1088,7 @@ body.kb-mobile-site .kb-profile-grid{grid-template-columns:repeat(4,minmax(0,1fr
 body.kb-mobile-site .track-list .track-row{min-height:58px}
 body.kb-mobile-site .track-title{font-size:14px!important}
 body.kb-mobile-site .track-artist{font-size:11px!important}
+@media (max-width:360px){body.kb-mobile-site .kb-mobile-grid .kb-mg-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 /* ---------- KB Music 有声书栏目 ---------- */
 .ab-searchbar{display:flex;gap:10px;margin:14px 0 12px;flex-wrap:wrap}
 .ab-searchbar input{flex:1;min-width:220px;height:42px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-input);background:var(--card);color:var(--text);font-size:13px;outline:none}
@@ -4594,7 +4595,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 24; // 当前网页版本序号
+  var APP_VERSION = 25; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -5840,7 +5841,7 @@ function checkUpdate() {
       ['♫', '华语流行', '#ff8a9b', '周杰伦'], ['☾', '深夜电台', '#7c8cff', 'lo-fi 纯音乐'],
       ['★', '热歌榜', '#ffb45c', '热门 金曲'], ['❀', '古风国风', '#5fd3a6', '中国风 古风'],
       ['⚡', '摇滚现场', '#ff7a6b', '摇滚 现场'], ['✿', '治愈轻音', '#5ac8e8', '治愈 轻音乐'],
-      ['♪', '欧美热歌', '#b08cff', 'Taylor Swift'], ['◉', ' personal 私藏', '#f4a6d0', '我的收藏']
+      ['♪', '欧美热歌', '#b08cff', 'Taylor Swift'], ['◉', '私藏歌单', '#f4a6d0', '我的收藏']
     ];
     var box = document.createElement('section');
     box.className = 'section kb-mobile-grid';
@@ -6283,6 +6284,7 @@ function checkUpdate() {
   else setTimeout(boot, 800);
 })();
 </script>
+
 
 
 
