@@ -1,22 +1,22 @@
 {
-  "version": 9,
-  "webVersion": 9,
-  "versionName": "1.0.8",
-  "releasedAt": "2026-11-27",
+  "version": 10,
+  "webVersion": 10,
+  "versionName": "1.0.9",
+  "releasedAt": "2026-11-28",
   "forceThreshold": 3,
   "changelog": [
-    "三端统一使用 K+音符图标；APK 下载改为同源直链并显示即时反馈",
-    "修复收藏失败、时长 --:--、标记免费却无播放地址、手机网页与 APK 歌词打不开",
-    "首页与猜你喜欢改为大卡片推荐样式，参考 QQ 音乐桌面/手机布局",
-    "新版本提示与更新小球：水位进度覆盖 AI 球，完成后跳转下载",
-    "APK v1.0.8：GLM 语音助手 + 更新小球 + 歌词入口修复"
+    "修复 APK 国内音源搜索参数，网易云/QQ/酷狗重新返回正确结果",
+    "恢复完整筛选与设置/音源设置入口",
+    "播放页新增上一首/下一首并修复暂停，重做深色+青色背景",
+    "语音球支持拖动、权限申请与更灵动外观；我的页图标点击动画与刷新",
+    "手机版与电脑版站点分工，所有站点保留 EXE/APK 下载；修复无意义更新提示"
   ],
   "downloads": {
     "apk": "https://kaobei-music.pages.dev/api/apk",
-    "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.6/KB-Music-1.0.6-x64.exe",
-    "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.6/KB-Music-1.0.6-portable.exe"
+    "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.7/KB-Music-1.0.7-x64.exe",
+    "exePortable": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.7/KB-Music-1.0.7-portable.exe"
   },
   "apk": "https://kaobei-music.pages.dev/api/apk",
-  "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.6/KB-Music-1.0.6-x64.exe",
+  "exe": "https://github.com/K-dji/kb-music-native/releases/download/v1.0.7/KB-Music-1.0.7-x64.exe",
   "webUrl": "https://kaobei-music.pages.dev/"
 }
