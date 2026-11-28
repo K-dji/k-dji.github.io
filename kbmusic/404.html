@@ -1130,6 +1130,26 @@ body.kb-mobile-site .kb-mobile-home{display:block!important}
 .kb-mh-info .kb-mh-desc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kb-mh-heart{font-size:18px;color:var(--faint)}
 body.kb-desktop-site .kb-mobile-home{display:none!important}
+
+/* ===== 形态转换：迷你条 → 全屏播放页 ===== */
+.player-bar{transition:height .44s cubic-bezier(.2,.9,.25,1),transform .44s cubic-bezier(.2,.9,.25,1),opacity .24s ease}
+.player-bar .player-cover{transition:transform .56s cubic-bezier(.2,.9,.25,1),box-shadow .44s ease}
+.player-bar.is-expanded{animation:kbMorphSheet .56s cubic-bezier(.2,.9,.25,1)}
+.player-bar.is-expanded .player-cover{animation:kbMorphCover .56s cubic-bezier(.2,.9,.25,1)}
+.player-bar.is-expanded .player-meta{animation:kbMorphMeta .48s cubic-bezier(.2,.9,.25,1) .06s both}
+@keyframes kbMorphSheet{from{transform:translateY(7%) scale(.985);opacity:.25}to{transform:none;opacity:1}}
+@keyframes kbMorphCover{from{transform:scale(.18) translateY(24%);opacity:.0}to{transform:none;opacity:1}}
+@keyframes kbMorphMeta{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+body.kb-morph-closing .player-bar{animation:kbMorphSheetOut .34s cubic-bezier(.2,.9,.25,1) both}
+@keyframes kbMorphSheetOut{from{transform:none;opacity:1}to{transform:translateY(8%) scale(.985);opacity:.2}}
+
+/* 桌面端：悬停弹性展开 */
+@media (min-width:960px){
+  body.kb-desktop-site .player-bar{height:64px!important}
+  body.kb-desktop-site .player-bar:not(.is-expanded):hover{height:84px!important;box-shadow:0 -14px 40px rgba(30,40,60,.14)!important}
+  body.kb-desktop-site .player-bar:not(.is-expanded):hover .player-cover{transform:scale(1.08)}
+  body.kb-desktop-site .player-bar:not(.is-expanded):hover .player-status-chip{opacity:1!important;transform:none!important}
+}
 /* ---------- KB Music 有声书栏目 ---------- */
 .ab-searchbar{display:flex;gap:10px;margin:14px 0 12px;flex-wrap:wrap}
 .ab-searchbar input{flex:1;min-width:220px;height:42px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-input);background:var(--card);color:var(--text);font-size:13px;outline:none}
@@ -4636,7 +4656,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 27; // 当前网页版本序号
+  var APP_VERSION = 28; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -4838,6 +4858,44 @@ function checkUpdate() {
     }, true);
   }
 
+  function hookMorphPlayer() {
+    var bar = $('#playerBar');
+    if (!bar || bar.dataset.morphHook) return;
+    bar.dataset.morphHook = '1';
+    var collapse = $('#playerCollapseBtn');
+    if (collapse) collapse.addEventListener('click', function () {
+      document.body.classList.add('kb-morph-closing');
+      setTimeout(function () { document.body.classList.remove('kb-morph-closing'); }, 340);
+    });
+    var startY = null, lastY = null, lastT = 0;
+    bar.addEventListener('touchstart', function (e) {
+      if (!bar.classList.contains('is-expanded')) return;
+      startY = e.touches[0].clientY; lastY = startY; lastT = Date.now();
+    }, { passive: true });
+    bar.addEventListener('touchmove', function (e) {
+      if (startY === null) return;
+      lastY = e.touches[0].clientY;
+      var dy = lastY - startY;
+      if (dy > 0) {
+        bar.style.transform = 'translateY(' + Math.min(dy * .55, 130) + 'px)';
+        bar.style.opacity = String(Math.max(.35, 1 - dy / 720));
+      }
+    }, { passive: true });
+    bar.addEventListener('touchend', function () {
+      if (startY === null) return;
+      var dy = lastY - startY;
+      var dt = Math.max(1, Date.now() - lastT);
+      var vel = dy / dt;
+      bar.style.transform = ''; bar.style.opacity = ''; startY = null;
+      if (dy > 140 || vel > .55) {
+        document.body.classList.add('kb-morph-closing');
+        setTimeout(function () { document.body.classList.remove('kb-morph-closing'); }, 340);
+        var btn = $('#playerCollapseBtn');
+        if (btn) btn.click();
+      }
+    }, { passive: true });
+  }
+
   function boot() {
     setTimeout(function () {
       markSite();
@@ -4852,6 +4910,7 @@ function checkUpdate() {
       hookDirectPlay();
       buildRightRail();
       buildLxTools();
+      hookMorphPlayer();
       checkUpdate();
     }, 400);
   }
@@ -6364,6 +6423,7 @@ function checkUpdate() {
   else setTimeout(boot, 800);
 })();
 </script>
+
 
 
 
