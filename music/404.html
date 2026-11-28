@@ -869,7 +869,11 @@ body.kb-mobile-site[data-theme="light"]{background:linear-gradient(180deg,#f2fff
 body.kb-mobile-site .app{max-width:480px;margin:0 auto}
 body.kb-desktop-site .app{max-width:none}
 /* 电脑版：严格按 QQ 音乐 PC 骨架——左侧图标栏 / 顶部搜索 / 推荐墙 / 底部播放条 */
-body.kb-desktop-site{padding-right:0!important}
+body.kb-desktop-site{padding-right:0!important;background:#fff!important;color:#1f2430!important}
+body.kb-desktop-site .main-wrap,body.kb-desktop-site .content,body.kb-desktop-site .sidebar{background:#fff!important;color:#1f2430!important}
+body.kb-desktop-site .hero{background:linear-gradient(120deg,#fff 0%,#f4f9ff 100%)!important}
+body.kb-desktop-site .hero__title,body.kb-desktop-site .hero__sub,body.kb-desktop-site .hero .chip{color:#1f2430!important}
+body.kb-desktop-site .section h2,body.kb-desktop-site .sec-head h2{color:#1f2430!important}
 body.kb-desktop-site .app{grid-template-columns:56px minmax(0,1fr)!important}
 body.kb-desktop-site .main-wrap{min-width:0}
 body.kb-desktop-site .content{max-width:none!important;margin:0!important;width:100%!important;padding:14px 30px 106px!important}
@@ -884,7 +888,6 @@ body.kb-desktop-site .nav{width:100%;align-items:center}
 body.kb-desktop-site .nav-item{width:40px;height:40px;min-height:40px!important;padding:0!important;justify-content:center;border-radius:12px!important}
 body.kb-desktop-site .nav-item.active svg{color:var(--accent)!important}
 body.kb-desktop-site #kbMobileGrid{display:none!important}
-body.kb-desktop-site .hero__title,body.kb-desktop-site .hero__sub,body.kb-desktop-site .hero .chip{color:#fff!important}
 body.kb-desktop-site .shelf{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:14px;overflow:visible;margin:0!important;padding:0!important}
 body.kb-desktop-site .shelf-card{border-radius:14px!important;box-shadow:0 8px 20px rgba(30,40,60,.08)}
 body.kb-desktop-site .shelf-card__cover{aspect-ratio:1/1;border-radius:12px;font-size:34px}
