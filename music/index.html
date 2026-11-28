@@ -868,7 +868,7 @@ body.kb-mobile-site .kb-profile-grid button{border:0;border-radius:14px;backgrou
 .kb-mobile-grid .kb-mg-title{font-size:15px;font-weight:800;margin:2px 2px 12px;color:var(--text)}
 .kb-mobile-grid .kb-mg-list{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 6px}
 .kb-mobile-grid .kb-mg-item{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;color:var(--muted);font-size:11px;cursor:pointer}
-.kb-mobile-grid .kb-mg-icon{width:48px;height:48px;border-radius:18px;display:grid;place-items:center;font-size:22px;color:#fff;box-shadow:0 8px 18px rgba(24,35,61,.12)}
+.kb-mobile-grid .kb-mg-icon{width:48px;height:48px;border-radius:18px;display:grid;place-items:center;font-size:22px;color:#fff;border:1px solid rgba(255,255,255,.55);backdrop-filter:blur(8px);box-shadow:0 8px 18px rgba(24,35,61,.12),inset 0 1px 0 rgba(255,255,255,.45)}
 .kb-mobile-grid .kb-mg-item:active .kb-mg-icon{transform:scale(.92)}
 /* 手机版歌词：大歌词 → 双语列表轨迹动画 */
 body.kb-mobile-site #lyricDrawer{position:relative}
@@ -1016,6 +1016,15 @@ body.kb-custom-theme .section h2,body.kb-custom-theme .track-title,body.kb-custo
 .kb-palette-grid button{min-height:62px;border:1px solid rgba(127,127,127,.2);border-radius:12px;font-size:12px;font-weight:700;cursor:pointer}
 .kb-palette-grid button:hover{outline:2px solid var(--accent)}
 .kb-palette-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+
+/* MiraiPlayer 式四种歌词舞台 */
+.kb-lyric-stages{position:absolute;left:0;right:0;top:58px;z-index:6;display:flex;justify-content:center;gap:8px}
+.kb-lyric-stages button{border:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.22);color:#fff;border-radius:99px;padding:5px 12px;font-size:11px;backdrop-filter:blur(10px);cursor:pointer}
+.kb-lyric-stages button.is-on{background:var(--accent);color:#fff;border-color:transparent}
+#lyricDrawer[data-stage="hand"] #lyricBody>*{font-family:"Comic Sans MS","Segoe Print",cursive;color:#ff7aa8;transform:rotate(-2deg);font-size:22px!important;font-weight:700}
+#lyricDrawer[data-stage="caption"] #lyricBody>*{display:inline-block;padding:5px 14px;margin:3px auto;border:1px solid rgba(255,255,255,.35);border-radius:8px;background:rgba(0,0,0,.35);font-size:15px}
+#lyricDrawer[data-stage="dialogue"] #lyricBody>*{max-width:74%;margin-left:0;margin-right:auto;text-align:left;padding:7px 12px;border-radius:14px 14px 14px 4px;background:rgba(255,255,255,.14);font-size:14px}
+#lyricDrawer[data-stage="dialogue"] #lyricBody>*:nth-child(even){margin-left:auto;margin-right:0;border-radius:14px 14px 4px 14px;background:rgba(7,193,96,.22)}
 /* ---------- KB Music 有声书栏目 ---------- */
 .ab-searchbar{display:flex;gap:10px;margin:14px 0 12px;flex-wrap:wrap}
 .ab-searchbar input{flex:1;min-width:220px;height:42px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-input);background:var(--card);color:var(--text);font-size:13px;outline:none}
@@ -4522,7 +4531,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 19; // 当前网页版本序号
+  var APP_VERSION = 20; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -4822,6 +4831,34 @@ function checkUpdate() {
       else drawer.classList.remove('kb-lyric-trans');
     });
   }
+
+  /* MiraiPlayer 式四种歌词舞台 */
+  if (!$('.kb-lyric-stages', drawer)) {
+    var stages = document.createElement('div');
+    stages.className = 'kb-lyric-stages';
+    stages.innerHTML = '<button type="button" data-stage="fashion">时尚</button><button type="button" data-stage="hand">手书</button><button type="button" data-stage="caption">字幕</button><button type="button" data-stage="dialogue">对话</button>';
+    drawer.appendChild(stages);
+    stages.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-stage]');
+      if (!b) return;
+      drawer.setAttribute('data-stage', b.getAttribute('data-stage'));
+      $$('button', stages).forEach(function (x) { x.classList.toggle('is-on', x === b); });
+    });
+    var first = stages.querySelector('[data-stage="fashion"]');
+    if (first) first.classList.add('is-on');
+  }
+
+  /* LIZI 式上下滑切歌 */
+  var touchY = null;
+  drawer.addEventListener('touchstart', function (e) { touchY = e.touches[0].clientY; }, { passive: true });
+  drawer.addEventListener('touchend', function (e) {
+    if (touchY === null) return;
+    var dy = e.changedTouches[0].clientY - touchY;
+    touchY = null;
+    if (Math.abs(dy) < 70) return;
+    var btn = dy < 0 ? $('#nextBtn') : $('#prevBtn');
+    if (btn) btn.click();
+  }, { passive: true });
 
   var audio = $('#audio');
   function sync() {
@@ -6116,6 +6153,9 @@ function checkUpdate() {
   else setTimeout(boot, 800);
 })();
 </script>
+
+
+
 <script>
 /* KB Music 配色主题系统 SCRIPT：来源 KB Chat 背景样式参考库 */
 (function () {
@@ -6182,7 +6222,7 @@ function checkUpdate() {
     modal.innerHTML = '<div class="modal-card"><div class="modal-head"><h3>界面配色</h3><button class="icon-btn" data-close-modal aria-label="关闭">✕</button></div>' +
       '<div class="kb-palette-grid">' + all.map(function (t) {
         return '<button type="button" data-theme="' + esc(t.id) + '" style="background:' + t.b + ';color:' + t.f + '">' + esc(t.n) + '</button>';
-      }).join('') + '</div><div class="kb-palette-actions"><button class="btn btn--ghost" id="kbAddTheme" type="button">＋ 新增配色</button><button class="btn btn--ghost" id="kbResetTheme" type="button">恢复默认</button></div></div>';
+      }).join('') + '</div><div class="kb-palette-actions"><button class="btn btn--ghost" id="kbAddTheme" type="button">＋ 新增配色</button><button class="btn btn--ghost" id="kbSystemTheme" type="button">跟随系统</button><button class="btn btn--ghost" id="kbResetTheme" type="button">恢复默认</button></div></div>';
     document.body.appendChild(modal);
     var opener = $('#kbPaletteOpen');
     if (opener) opener.addEventListener('click', function () { modal.hidden = false; });
@@ -6197,6 +6237,14 @@ function checkUpdate() {
       ['--kb-bg','--kb-fg','--kb-in','--kb-out','--kb-in-fg','--kb-out-fg','--kb-nav','--kb-input'].forEach(function (k) { document.documentElement.style.removeProperty(k); });
       modal.hidden = true;
     });
+    function applySystem() {
+      document.body.classList.remove('kb-custom-theme');
+      ['--kb-bg','--kb-fg','--kb-in','--kb-out','--kb-in-fg','--kb-out-fg','--kb-nav','--kb-input'].forEach(function (k) { document.documentElement.style.removeProperty(k); });
+      var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.body.dataset.theme = dark ? 'dark' : 'light';
+      LS.set('kb-color-theme', 'system');
+    }
+    $('#kbSystemTheme').addEventListener('click', function () { applySystem(); modal.hidden = true; });
     $('#kbAddTheme').addEventListener('click', function () {
       var n = window.prompt('配色名称：', '我的配色');
       if (!n) return;
@@ -6207,7 +6255,8 @@ function checkUpdate() {
       custom.push(t); LS.set('kb-color-custom', custom); all.push(t); applyTheme(t); modal.hidden = true;
     });
     var saved = LS.get('kb-color-theme', '');
-    if (saved) { var cur = all.filter(function (x) { return x.id === saved; })[0]; if (cur) applyTheme(cur); }
+    if (saved === 'system') applySystem();
+    else if (saved) { var cur = all.filter(function (x) { return x.id === saved; })[0]; if (cur) applyTheme(cur); }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(build, 600); });
   else setTimeout(build, 600);
