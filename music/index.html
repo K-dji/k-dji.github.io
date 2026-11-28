@@ -1053,6 +1053,17 @@ body.kb-mobile-site .track-list .track-row{min-height:62px}
   .kb-right-rail .kb-rr-actions{display:flex;gap:8px;margin-top:14px}
   .kb-right-rail .kb-rr-actions button{flex:1;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:10px;padding:8px 0;font-size:12px;cursor:pointer}
 }
+
+/* 洛雪音乐桌面版借鉴：三列大歌单墙 + 排序工具条 */
+body.kb-desktop-site .shelf{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:18px}
+body.kb-desktop-site .shelf-card{padding:10px}
+body.kb-desktop-site .shelf-card__cover{aspect-ratio:1/1!important;border-radius:14px}
+.kb-lx-tools{display:flex;align-items:center;gap:8px;margin:6px 0 16px}
+.kb-lx-tools button{border:0;background:transparent;color:var(--muted);font-size:12px;padding:5px 10px;border-radius:8px;cursor:pointer}
+.kb-lx-tools button.is-on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.kb-lx-tools .kb-lx-right{margin-left:auto;display:flex;gap:8px}
+.kb-lx-tools .kb-lx-right button{border:1px solid var(--line);background:var(--card-bg)}
+body.kb-mobile-site .kb-lx-tools{display:none!important}
 /* ---------- KB Music 有声书栏目 ---------- */
 .ab-searchbar{display:flex;gap:10px;margin:14px 0 12px;flex-wrap:wrap}
 .ab-searchbar input{flex:1;min-width:220px;height:42px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-input);background:var(--card);color:var(--text);font-size:13px;outline:none}
@@ -4559,7 +4570,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 21; // 当前网页版本序号
+  var APP_VERSION = 22; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -4666,6 +4677,40 @@ function checkUpdate() {
     }
   }
 
+  function buildLxTools() {
+    var host = $('#playlistShelf');
+    if (!host || $('#kbLxTools')) return;
+    var bar = document.createElement('div');
+    bar.className = 'kb-lx-tools';
+    bar.id = 'kbLxTools';
+    bar.innerHTML = '<button type="button" class="is-on" data-lx-sort="default">默认</button>' +
+      '<button type="button" data-lx-sort="latest">最新</button><button type="button" data-lx-sort="hot">最热</button>' +
+      '<span class="kb-lx-right"><button type="button" data-lx-act="queue">打开歌单</button><button type="button" data-lx-act="random">随机音乐</button></span>';
+    host.parentNode.insertBefore(bar, host);
+    bar.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      var sort = b.getAttribute('data-lx-sort');
+      if (sort) {
+        $$('[data-lx-sort]', bar).forEach(function (x) { x.classList.toggle('is-on', x === b); });
+        var grid = $('#shelfGrid');
+        if (grid) {
+          var cards = $$('.shelf-card', grid);
+          if (sort === 'latest') cards.reverse();
+          else if (sort === 'hot') cards.sort(function (a, c) { return (c.textContent.match(/[\d.]+万/) || ['0'])[0].localeCompare((a.textContent.match(/[\d.]+万/) || ['0'])[0]); });
+          cards.forEach(function (x) { grid.appendChild(x); });
+        }
+        return;
+      }
+      var act = b.getAttribute('data-lx-act');
+      if (act === 'queue') { var q = $('.nav-item[data-view="queue"]'); if (q) q.click(); }
+      else if (act === 'random') {
+        var cards2 = $$('#shelfGrid .shelf-card');
+        if (cards2.length) { var c = cards2[Math.floor(Math.random() * cards2.length)]; var n = c.querySelector('.shelf-card__name'); if (n) playQuery(n.textContent.trim()); }
+      }
+    });
+  }
+
   function buildRightRail() {
     if ($('#kbRightRail')) return;
     var rail = document.createElement('aside');
@@ -4740,6 +4785,7 @@ function checkUpdate() {
       handleShareRoute();
       hookDirectPlay();
       buildRightRail();
+      buildLxTools();
       checkUpdate();
     }, 400);
   }
@@ -6213,6 +6259,7 @@ function checkUpdate() {
   else setTimeout(boot, 800);
 })();
 </script>
+
 
 
 
