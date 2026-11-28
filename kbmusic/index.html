@@ -4699,7 +4699,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 28; // 当前网页版本序号
+  var APP_VERSION = 29; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
