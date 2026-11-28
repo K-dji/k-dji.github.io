@@ -1092,6 +1092,44 @@ body.kb-mobile-site .track-artist{font-size:11px!important}
 body.kb-mobile-site .kb-mobile-tabs button{min-width:0!important;padding:0 2px!important}
 body.kb-mobile-site .topbar .icon-btn{width:34px!important;height:34px!important;font-size:16px!important}
 body.kb-mobile-site .topbar .kb-theme-tools{gap:6px!important}
+
+/* ===== 手机版首页：宅家 Radio + 私人专属好歌（基本对齐参考视频） ===== */
+body.kb-mobile-site #kbMobileTopTabs,
+body.kb-mobile-site #kbMobileGrid,
+body.kb-mobile-site #kbGuessYouLike,
+body.kb-mobile-site .shelf,
+body.kb-mobile-site .source-strip,
+body.kb-mobile-site .footnote{display:none!important}
+body.kb-mobile-site #discoverView > *:not(#kbMobileHome){display:none!important}
+body.kb-mobile-site .kb-mobile-home{display:block!important}
+.kb-mh-top{display:flex;align-items:center;gap:16px;padding:2px 2px 12px}
+.kb-mh-tab{font-size:15px;color:var(--muted)}
+.kb-mh-tab.is-on{font-size:19px;font-weight:800;color:var(--text)}
+.kb-mh-icons{margin-left:auto;font-size:13px;color:var(--muted)}
+.kb-mh-hero-row{display:flex;gap:10px;align-items:stretch}
+.kb-mh-hero{position:relative;flex:0 0 45%;min-height:132px;padding:12px;border-radius:18px;background:linear-gradient(140deg,#fff1e2,#ffe0cc);color:#4a3329}
+.kb-mh-hero b{font-size:18px;font-weight:800;display:block}
+.kb-mh-hero b i{font-style:normal;color:#e2673b}
+.kb-mh-hero small{display:block;margin-top:6px;font-size:11px;opacity:.85}
+.kb-mh-play{position:absolute;right:10px;bottom:10px;width:30px;height:30px;border-radius:50%;background:#ff7a3c;color:#fff;display:grid;place-items:center;font-size:12px}
+.kb-mh-covers{flex:1;display:flex;gap:10px;overflow-x:auto;scrollbar-width:none}
+.kb-mh-covers::-webkit-scrollbar{display:none}
+.kb-mh-cover{flex:0 0 88px;height:88px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:6px}
+.kb-mh-cover b{font-size:11px;line-height:1.2}
+.kb-mh-cover small{font-size:9px;opacity:.85;margin-top:3px}
+.kb-mh-note{margin-top:14px;font-size:11px;color:var(--muted)}
+.kb-mh-title{display:flex;align-items:center;gap:6px;font-size:19px;font-weight:800;color:var(--text);margin:6px 0 12px}
+.kb-mh-title span{font-size:13px;color:var(--accent)}
+.kb-mh-title i{margin-left:auto;font-style:normal;color:var(--faint)}
+.kb-mh-list{display:flex;flex-direction:column;gap:8px}
+.kb-mh-row{display:flex;align-items:center;gap:10px;width:100%;padding:8px;border:0;background:transparent;color:var(--text);text-align:left;cursor:pointer}
+.kb-mh-cover-sm{width:48px;height:48px;flex:none;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;color:var(--faint)}
+.kb-mh-info{flex:1;min-width:0}
+.kb-mh-info b{display:block;font-size:14px;font-weight:700}
+.kb-mh-info small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.kb-mh-info .kb-mh-desc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kb-mh-heart{font-size:18px;color:var(--faint)}
+body.kb-desktop-site .kb-mobile-home{display:none!important}
 /* ---------- KB Music 有声书栏目 ---------- */
 .ab-searchbar{display:flex;gap:10px;margin:14px 0 12px;flex-wrap:wrap}
 .ab-searchbar input{flex:1;min-width:220px;height:42px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r-input);background:var(--card);color:var(--text);font-size:13px;outline:none}
@@ -4598,7 +4636,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 26; // 当前网页版本序号
+  var APP_VERSION = 27; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
@@ -5810,6 +5848,45 @@ function checkUpdate() {
     });
   }
 
+  /* ---------- 手机版首页：宅家 Radio + 私人专属好歌 ---------- */
+  function buildMobileHome() {
+    if ($('#kbMobileHome')) return;
+    var host = $('#discoverView');
+    if (!host) return;
+    var songs = [
+      { t: '晴', a: '汪苏泷', d: '破碎 推荐 - 我不允许没有人不知道这首歌 真的好...' },
+      { t: 'Memories', a: 'TRA$H', d: '崩崩崩不住了 推荐 - 随笔一一山海 感觉写得挺...' },
+      { t: '爱人错过', a: '告五人', d: '私人专属好歌 推荐 - 告五人' },
+      { t: 'Second Play Secret Place', a: '砧板铃薯', d: '宝藏音乐故事 - 为你推荐' },
+      { t: 'Changing Night', a: '夏瀚宇', d: '潮流音榜 - 星 Crossing Night' },
+      { t: 'Baby, Don\'t Cry (英文版)', a: 'IN-K', d: '私人心歌好 - Baby, Don\'t Cry (英文版)' }
+    ];
+    var covers = [
+      { t: '宅家 RadiO', c: '#ffb37b', s: 'Story · Taylor Swift' },
+      { t: '私人雷达', c: '#7bdcc9', s: '根据口味生成' },
+      { t: '潮流音榜', c: '#f7b7c8', s: '每周更新' },
+      { t: '宝藏故事', c: '#9bb8ff', s: '故事电台' }
+    ];
+    var box = document.createElement('section');
+    box.className = 'kb-mobile-home';
+    box.id = 'kbMobileHome';
+    box.innerHTML = '<div class="kb-mh-top"><span class="kb-mh-tab is-on">发现</span><span class="kb-mh-tab">免费听</span><span class="kb-mh-tab">乐库</span><span class="kb-mh-icons">⌕ · 免 · ↻</span></div>' +
+      '<div class="kb-mh-hero-row"><div class="kb-mh-hero"><b>宅家 <i>RadiO</i> ⇄</b><small>Story · Taylor Swift</small><span class="kb-mh-play">▶</span></div>' +
+      '<div class="kb-mh-covers">' + covers.map(function (c) {
+        return '<div class="kb-mh-cover" style="background:linear-gradient(135deg,' + c.c + ',' + c.c + 'cc)"><b>' + esc(c.t) + '</b><small>' + esc(c.s) + '</small></div>';
+      }).join('') + '</div></div>' +
+      '<div class="kb-mh-note">宝藏音乐故事 · 为你推荐</div>' +
+      '<div class="kb-mh-title">私人专属好歌 <span>▶</span><i>›</i></div>' +
+      '<div class="kb-mh-list">' + songs.map(function (s) {
+        return '<button class="kb-mh-row" data-mh="' + esc(s.t) + '"><span class="kb-mh-cover-sm">♪</span><span class="kb-mh-info"><b>' + esc(s.t) + '</b><small>' + esc(s.a) + '</small><small class="kb-mh-desc">' + esc(s.d) + '</small></span><span class="kb-mh-heart">♡</span></button>';
+      }).join('') + '</div>';
+    host.insertBefore(box, host.firstChild);
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-mh]');
+      if (b && window.KBMusicAPI && window.KBMusicAPI.doSearch) window.KBMusicAPI.doSearch(b.getAttribute('data-mh'));
+    });
+  }
+
   /* ---------- 手机版：顶部标签 + 网易云式个人页头 ---------- */
   function buildMobileShell() {
     if (!$('#kbMobileTopTabs')) {
@@ -6257,7 +6334,7 @@ function checkUpdate() {
     }, 1800);
   }
   function boot() {
-    buildThemeTools(); hookUpdateBall(); addViews(); addNav(); addRankView(); buildMobileShell(); buildMobileGrid(); addPlayerStar(); buildSearchPanel(); buildGuessYouLike(); bindLibActions(); hookLyricsAnywhere(); hookFunButtons(); branchPrompt(); hookRecent(); renderNavCounts();
+    buildThemeTools(); hookUpdateBall(); addViews(); addNav(); addRankView(); buildMobileShell(); buildMobileHome(); buildMobileGrid(); addPlayerStar(); buildSearchPanel(); buildGuessYouLike(); bindLibActions(); hookLyricsAnywhere(); hookFunButtons(); branchPrompt(); hookRecent(); renderNavCounts();
     var pm = location.pathname.match(/\/p\/([A-Za-z0-9_-]+)\/?$/);
     if (!pm) {
       var qs = new URLSearchParams(location.search).get('share');
@@ -6287,6 +6364,7 @@ function checkUpdate() {
   else setTimeout(boot, 800);
 })();
 </script>
+
 
 
 
