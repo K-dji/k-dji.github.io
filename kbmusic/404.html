@@ -868,30 +868,38 @@ body.kb-mobile-site{--accent:#00bfa5;--accent-press:#009e8a;--accent-soft:rgba(0
 body.kb-mobile-site[data-theme="light"]{background:linear-gradient(180deg,#f2fffd,#eafaf7)!important}
 body.kb-mobile-site .app{max-width:480px;margin:0 auto}
 body.kb-desktop-site .app{max-width:none}
-/* 电脑版：QQ 音乐式沉浸布局 + 大圆角 */
+/* 电脑版：严格按 QQ 音乐 PC 骨架——左侧图标栏 / 顶部搜索 / 推荐墙 / 底部播放条 */
 body.kb-desktop-site{padding-right:0!important}
-body.kb-desktop-site .app{grid-template-columns:208px minmax(0,1fr)!important}
+body.kb-desktop-site .app{grid-template-columns:56px minmax(0,1fr)!important}
 body.kb-desktop-site .main-wrap{min-width:0}
-body.kb-desktop-site .content{max-width:none!important;margin:0!important;width:100%!important;padding:18px 26px 120px!important}
-body.kb-desktop-site .topbar{height:auto!important;margin:12px 14px 0;border-radius:18px;padding:10px 18px!important;box-shadow:0 8px 24px rgba(24,35,61,.06)}
-body.kb-desktop-site .sidebar{width:auto!important;max-width:none;min-width:0;margin:0;border-radius:0 18px 18px 0;padding:18px 12px!important;border:0!important;box-shadow:0 8px 24px rgba(24,35,61,.06);align-items:stretch;font-size:13px}
-body.kb-desktop-site .sidebar .brand-text,body.kb-desktop-site .nav-label,body.kb-desktop-site .side-card,body.kb-desktop-site .sidebar__close{display:block!important}
-body.kb-desktop-site .sidebar .nav-item>span:not(.count){display:inline!important}
-body.kb-desktop-site .brand{padding:4px 6px 10px!important}
-body.kb-desktop-site .nav{width:100%;align-items:stretch}
-body.kb-desktop-site .nav-item{width:auto;height:auto;min-height:42px!important;padding:0 12px!important;justify-content:flex-start;border-radius:12px!important;font-size:13.5px!important}
-body.kb-desktop-site .nav-item svg{font-size:18px!important}
-body.kb-desktop-site .nav-item .count{position:static;transform:none;min-width:20px;height:20px;font-size:10.5px;padding:0 6px}
+body.kb-desktop-site .content{max-width:none!important;margin:0!important;width:100%!important;padding:14px 30px 106px!important}
+body.kb-desktop-site .topbar{height:auto!important;margin:10px 16px 0;border-radius:20px;padding:8px 18px!important;box-shadow:0 6px 18px rgba(30,40,60,.05)}
+body.kb-desktop-site .sidebar{width:56px!important;max-width:56px;min-width:56px;margin:0!important;border-radius:0;padding:12px 8px!important;border:0!important;align-items:center!important;overflow:hidden}
+body.kb-desktop-site .sidebar *{font-size:0!important;color:transparent!important}
+body.kb-desktop-site .sidebar svg{font-size:18px!important;color:var(--faint)!important}
+body.kb-desktop-site .sidebar .brand-text,body.kb-desktop-site .nav-label,body.kb-desktop-site .side-card,body.kb-desktop-site .sidebar__close,body.kb-desktop-site .nav-item .count,body.kb-desktop-site .kb-playlist-toggle,body.kb-desktop-site .kb-playlist-list,body.kb-desktop-site .health{display:none!important}
+body.kb-desktop-site .brand{padding:2px 0 12px!important;justify-content:center}
+body.kb-desktop-site .brand-mark{width:32px;height:32px;border-radius:10px;font-size:12px!important;color:var(--accent-ink)!important}
+body.kb-desktop-site .nav{width:100%;align-items:center}
+body.kb-desktop-site .nav-item{width:40px;height:40px;min-height:40px!important;padding:0!important;justify-content:center;border-radius:12px!important}
+body.kb-desktop-site .nav-item.active svg{color:var(--accent)!important}
 body.kb-desktop-site #kbMobileGrid{display:none!important}
 body.kb-desktop-site .hero__title,body.kb-desktop-site .hero__sub,body.kb-desktop-site .hero .chip{color:#fff!important}
-body.kb-desktop-site .section,body.kb-desktop-site .side-card,body.kb-desktop-site .shelf-card,body.kb-desktop-site .rec-card,body.kb-desktop-site .download-btn{border-radius:20px!important}
-body.kb-desktop-site .shelf-cover{display:grid;place-items:center;aspect-ratio:4/5;border-radius:16px;color:#fff;font-size:28px;font-weight:700}
-body.kb-desktop-site .player-bar{top:auto!important;right:0!important;bottom:0!important;left:0!important;width:auto!important;height:78px!important;flex-direction:row!important;align-items:center!important;gap:12px!important;padding:0 22px!important;border-radius:20px 20px 0 0!important;border-top:1px solid var(--line)!important;border-left:0!important;box-shadow:0 -10px 30px rgba(24,35,61,.08)!important;overflow:hidden}
-body.kb-desktop-site .player-bar .player-track{flex:0 0 240px}
+body.kb-desktop-site .shelf{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:14px;overflow:visible;margin:0!important;padding:0!important}
+body.kb-desktop-site .shelf-card{border-radius:14px!important;box-shadow:0 8px 20px rgba(30,40,60,.08)}
+body.kb-desktop-site .shelf-card__cover{aspect-ratio:1/1;border-radius:12px;font-size:34px}
+body.kb-desktop-site .section,body.kb-desktop-site .rec-card,body.kb-desktop-site .download-btn{border-radius:18px!important}
+body.kb-desktop-site .track-list:not(#resultList){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:26px}
+body.kb-desktop-site .track-list .track-row{min-height:52px;border-top:0!important}
+body.kb-desktop-site #resultList .track-row{min-height:58px}
+body.kb-desktop-site .player-bar{top:auto!important;right:0!important;bottom:0!important;left:0!important;width:auto!important;height:64px!important;flex-direction:row!important;align-items:center!important;gap:12px!important;padding:0 20px!important;border-radius:0!important;border-top:1px solid var(--line)!important;border-left:0!important;box-shadow:0 -8px 24px rgba(30,40,60,.08)!important;overflow:hidden}
+body.kb-desktop-site .player-bar::before{height:3px!important;background:#ff3b30!important}
+body.kb-desktop-site .player-bar .player-track{flex:0 0 230px}
 body.kb-desktop-site .player-bar .player-center{flex:1}
 body.kb-desktop-site .player-bar .player-extras{flex:0 0 auto}
-body.kb-desktop-site .player-bar .player-cover{width:52px;height:52px;border-radius:10px}
-body.kb-desktop-site .toast-wrap{right:24px!important;bottom:96px!important}
+body.kb-desktop-site .player-bar .player-cover{width:44px;height:44px;border-radius:6px}
+body.kb-desktop-site .player-bar #playBtn{background:#00c86a!important;color:#fff!important;width:34px!important;height:34px!important}
+body.kb-desktop-site .toast-wrap{right:24px!important;bottom:80px!important}
 body.kb-desktop-site .kb-site-badge{border-radius:0 0 12px 12px}
 /* 分区标题行 */
 .sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:22px 2px 12px}
@@ -4476,7 +4484,7 @@ var QRCode;
 
   /* ---------- 更新提示（更新站版本检测） ---------- */
   var UPDATE_META_URL = 'https://k-dji.github.io/music/version.json';
-  var APP_VERSION = 16; // 当前网页版本序号
+  var APP_VERSION = 17; // 当前网页版本序号
 function checkUpdate() {
     fetch(UPDATE_META_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
